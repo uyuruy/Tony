@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akpoteheri Tony Usiaphre - Business Builder & GTM Operations Leader</title>
+    <title>Akpoteheri Tony Usiaphre - Operations, Executive Support & Project Coordination | Global, Remote</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -45,45 +45,67 @@
             background: var(--primary);
             transition: width 0.3s ease;
         }
-        .nav-link:hover::after {
-            width: 100%;
-        }
-        .hero-bg {
-            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-        }
-        .contact-btn, .whatsapp-btn {
-            transition: all 0.3s ease;
-        }
+        .nav-link:hover::after { width: 100%; }
+        .hero-bg { background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); }
+        .contact-btn, .whatsapp-btn { transition: all 0.3s ease; }
         .contact-btn:hover, .linkedin-btn:hover, .whatsapp-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
-        .linkedin-btn {
-            background: var(--linkedin);
-            transition: all 0.3s ease;
-        }
-        .whatsapp-btn {
-            background: var(--whatsapp);
-        }
-        .case-study-card, .value-card, .skill-category-card, .tech-category-card, .pursuit-card, .innovation-lab-card {
+        .linkedin-btn { background: var(--linkedin); transition: all 0.3s ease; }
+        .whatsapp-btn { background: var(--whatsapp); }
+        .case-study-card, .value-card, .skill-category-card, .tech-category-card, .pursuit-card, .arc-card {
             transition: all 0.3s ease;
             border-radius: 0.75rem;
             background-color: white;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
         }
-        .case-study-card:hover, .value-card:hover, .skill-category-card:hover, .tech-category-card:hover, .pursuit-card:hover, .innovation-lab-card:hover {
+        .case-study-card:hover, .value-card:hover, .skill-category-card:hover, .tech-category-card:hover, .pursuit-card:hover, .arc-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
-        .case-study-card {
-            border-left-width: 6px;
+        .case-study-card { border-left-width: 6px; }
+        /* Layered profile-photo stack */
+        .profile-stack {
+            position: relative;
+            width: 14rem;
+            height: 17rem;
         }
-        .modal-overlay {
-            transition: opacity 0.3s ease;
+        @media (min-width: 768px) {
+            .profile-stack { width: 19rem; height: 23rem; }
         }
-        .modal-content {
-            transition: transform 0.3s ease;
+        .profile-card-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 1.25rem;
         }
+        .profile-card-green {
+            background: var(--primary);
+            transform: rotate(-5deg) translate(-14px, -14px);
+        }
+        .profile-card-red {
+            background: var(--secondary);
+            transform: rotate(5deg) translate(14px, 14px);
+        }
+        .profile-photo {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            border-radius: 1.25rem;
+            overflow: hidden;
+            background: #fff;
+            padding: 8px;
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,0.35);
+        }
+        .profile-photo img {
+            border-radius: 0.85rem;
+        }
+        .modal-overlay { transition: opacity 0.3s ease; }
+        .modal-content { transition: transform 0.3s ease; }
         .video-container {
             position: relative;
             padding-bottom: 56.25%;
@@ -93,10 +115,8 @@
         }
         .video-container iframe {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
         }
         .notion-link {
             display: inline-flex;
@@ -106,18 +126,33 @@
             font-weight: 500;
             transition: all 0.2s ease;
         }
-        .notion-link:hover {
-            color: #0d3e9c;
-            transform: translateX(3px);
+        .notion-link:hover { color: #0d3e9c; transform: translateX(3px); }
+        .value-card { padding: 1.5rem; height: 100%; }
+        .value-icon { width: 3.5rem; height: 3.5rem; margin-bottom: 1rem; }
+        /* Evolution chain pills */
+        .evo-step {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.9rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
         }
-        .value-card {
-            padding: 1.5rem;
-            height: 100%;
+        .evo-arrow { color: #94a3b8; margin: 0 0.25rem; }
+        /* Timeline arc */
+        .arc-rail { position: relative; }
+        .arc-dot {
+            width: 1rem; height: 1rem; border-radius: 9999px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 0 0 4px rgba(0,90,49,0.12);
         }
-        .value-icon {
-            width: 3.5rem;
-            height: 3.5rem;
-            margin-bottom: 1rem;
+        .tag-pill {
+            display:inline-block; font-size:0.7rem; font-weight:600;
+            padding:0.15rem 0.6rem; border-radius:9999px; margin:0.15rem;
         }
     </style>
 </head>
@@ -129,9 +164,9 @@
             </div>
             <div class="hidden md:flex space-x-8">
                 <a href="#about" class="nav-link text-slate-600 hover:text-slate-900 transition">About</a>
-                <a href="#portfolio" class="nav-link text-slate-600 hover:text-slate-900 transition">Portfolio</a>
+                <a href="#arc" class="nav-link text-slate-600 hover:text-slate-900 transition">My Arc</a>
+                <a href="#portfolio" class="nav-link text-slate-600 hover:text-slate-900 transition">Work</a>
                 <a href="#skills" class="nav-link text-slate-600 hover:text-slate-900 transition">Skills</a>
-                <a href="#pursuits" class="nav-link text-slate-600 hover:text-slate-900 transition">Pursuits</a>
                 <a href="#contact" class="nav-link text-slate-600 hover:text-slate-900 transition">Contact</a>
             </div>
             <div class="md:hidden">
@@ -142,254 +177,296 @@
         </nav>
         <div id="mobile-menu" class="hidden md:hidden bg-white px-4 py-2 shadow-lg">
             <a href="#about" class="mobile-nav-link block py-2 text-slate-600 hover:text-slate-900">About</a>
-            <a href="#portfolio" class="mobile-nav-link block py-2 text-slate-600 hover:text-slate-900">Portfolio</a>
+            <a href="#arc" class="mobile-nav-link block py-2 text-slate-600 hover:text-slate-900">My Arc</a>
+            <a href="#portfolio" class="mobile-nav-link block py-2 text-slate-600 hover:text-slate-900">Work</a>
             <a href="#skills" class="mobile-nav-link block py-2 text-slate-600 hover:text-slate-900">Skills</a>
-            <a href="#pursuits" class="mobile-nav-link block py-2 text-slate-600 hover:text-slate-900">Pursuits</a>
             <a href="#contact" class="mobile-nav-link block py-2 text-slate-600 hover:text-slate-900">Contact</a>
         </div>
     </header>
 
-    <main class="container mx-auto px-6 py-12 md:py-20">
-        <section id="hero" class="flex flex-col md:flex-row items-center hero-bg rounded-2xl p-8 md:p-12">
-            <div class="md:w-2/3 text-center md:text-left">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight">Business Builder and GTM Operations Leader</h1>
-                <p class="mt-6 text-lg md:text-xl text-slate-600 max-w-2xl">Building systems that connect vision to execution. Specialising in ops strategy, product workflows, and GTM scaling for fast-moving teams.</p>
-                <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                    <a href="#portfolio" class="contact-btn text-white font-semibold py-3 px-8 rounded-lg shadow-lg inline-flex items-center justify-center" style="background: linear-gradient(135deg, var(--primary), var(--secondary));">View My Work</a>
-                    <a href="mailto:usiaphreteheri@gmail.com" class="bg-white text-slate-800 font-semibold py-3 px-8 rounded-lg hover:bg-slate-50 transition shadow-md border border-slate-200 inline-flex items-center justify-center">Contact Me</a>
-                    <a href="https://www.linkedin.com/in/teeheri" target="_blank" class="linkedin-btn text-white font-semibold py-3 px-8 rounded-lg shadow-lg inline-flex items-center justify-center">
-                        <i class="fab fa-linkedin-in mr-2"></i> LinkedIn
-                    </a>
-                </div>
-            </div>
-            <div class="md:w-1/3 mt-12 md:mt-0 flex justify-center">
-                <div class="relative">
-                    <div class="absolute inset-0 bg-gradient-to-br from-[#005a31] to-[#b70303] rounded-2xl transform rotate-6"></div>
-                    <div class="w-64 md:w-80 relative rounded-2xl overflow-hidden shadow-2xl">
-                        <img src="images/profile-picture.jpg" alt="Akpoteheri Tony Usiaphre" class="rounded-2xl w-full h-full object-cover">
+    <main class="container mx-auto px-6">
+        <!-- HERO -->
+        <section class="hero-bg rounded-2xl my-8 py-16 md:py-24 px-6 md:px-12">
+            <div class="grid md:grid-cols-5 gap-10 items-center">
+                <div class="md:col-span-3">
+                    <p class="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-3">Operations, Executive Support &amp; Project Coordination &bull; Global, Remote</p>
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight">
+                        I run things <span style="color:var(--primary)">end to end</span> for founders and lean teams &mdash; and I build the systems that keep them running.
+                    </h1>
+                    <p class="mt-6 text-lg text-slate-600 max-w-2xl">
+                        An operations professional, executive-support partner, and project coordinator for small and remote businesses, agencies, and founders. Years of turning messy, manual work into clean systems &mdash; from a healthcare supply chain career into the global remote economy.
+                    </p>
+                    <div class="mt-8 flex flex-wrap gap-3">
+                        <a href="#portfolio" style="background: linear-gradient(135deg, var(--primary), var(--secondary));" class="text-white font-semibold py-3 px-7 rounded-lg shadow-lg inline-flex items-center contact-btn">
+                            <i class="fas fa-folder-open mr-2"></i> See the Work
+                        </a>
+                        <a href="#contact" class="bg-white text-slate-700 font-semibold py-3 px-7 rounded-lg shadow border border-slate-200 inline-flex items-center contact-btn">
+                            <i class="fas fa-paper-plane mr-2"></i> Get in Touch
+                        </a>
+                    </div>
+                    <div class="mt-8 flex flex-wrap gap-2">
+                        <span class="tag-pill" style="background:#ecfdf5;color:#065f46;">Operations Leadership</span>
+                        <span class="tag-pill" style="background:#f5f3ff;color:#5b21b6;">Executive Support</span>
+                        <span class="tag-pill" style="background:#eff6ff;color:#1e40af;">Project Coordination</span>
+                        <span class="tag-pill" style="background:#fef2f2;color:#991b1b;">AI Workflow Design</span>
+                        <span class="tag-pill" style="background:#fffbeb;color:#92400e;">Remote &amp; Async</span>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <section id="about" class="py-20 mt-10">
-            <h2 class="text-3xl font-bold text-center section-title relative">About Me</h2>
-            <div class="max-w-4xl mx-auto text-slate-700 leading-relaxed text-center">
-                <p class="mb-6 text-lg">I design and implement scalable systems that translate strategy into measurable results using data-driven recommendations and end-to-end project management. Over the past six years, I built the operational backbone for a high-growth, venture-backed company, leading complex, cross-border programs across Africa. With experience as both an operator and founder, I thrive in globally distributed, high-performance teams.</p>
-                <p class="text-lg">I’m now focused on bringing that systems expertise to global product-led organisations, operationalising strategy, unifying teams, and leveraging automation and AI to streamline decision-making and scale impact.</p>
-            </div>
-        </section>
-        
-        <section id="values" class="py-20 bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl px-6">
-            <h2 class="text-3xl font-bold text-center section-title relative">Values I Bring To Teams</h2>
-            <div class="max-w-6xl mx-auto mt-12">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="value-card">
-                        <div class="value-icon bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-                            <i class="fas fa-rocket text-blue-600 text-2xl"></i>
+                <div class="md:col-span-2 flex justify-center">
+                    <div class="profile-stack">
+                        <span class="profile-card-back profile-card-green" aria-hidden="true"></span>
+                        <span class="profile-card-back profile-card-red" aria-hidden="true"></span>
+                        <div class="profile-photo">
+                            <img src="images/profile-picture.jpg" alt="Akpoteheri Tony Usiaphre" class="w-full h-full object-cover">
                         </div>
-                        <h3 class="font-bold text-xl text-slate-800 mb-3 text-center">Ownership & Autonomy</h3>
-                        <p class="text-slate-600 text-base text-center">I thrive when empowered to take initiative, own outcomes, and drive projects forward with a founder's mindset.</p>
-                    </div>
-                    <div class="value-card">
-                        <div class="value-icon bg-purple-100 rounded-full flex items-center justify-center mx-auto">
-                            <i class="fas fa-users text-purple-600 text-2xl"></i>
-                        </div>
-                        <h3 class="font-bold text-xl text-slate-800 mb-3 text-center">Collaborative Growth</h3>
-                        <p class="text-slate-600 text-base text-center">My goal is to work in a high-performance, collaborative team where I contribute meaningfully and support others to win, so the team wins together.</p>
-                    </div>
-                    <div class="value-card">
-                        <div class="value-icon bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                            <i class="fas fa-lightbulb text-green-600 text-2xl"></i>
-                        </div>
-                        <h3 class="font-bold text-xl text-slate-800 mb-3 text-center">Rapid Learning & Experimentation</h3>
-                        <p class="text-slate-600 text-base text-center">I believe in moving fast, testing ideas, and creating a feedback-heavy environment where learning is celebrated as much as winning.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="portfolio" class="py-20">
-            <h2 class="text-3xl font-bold text-center section-title relative">Portfolio: Key Projects</h2>
-            <div class="space-y-12 mt-12 max-w-4xl mx-auto">
-
-                <div class="case-study-card p-8" style="border-left-color: #3b82f6;">
-                    <h3 class="font-bold text-2xl mb-2 text-slate-800">Case Study: AI-Powered Market Risk Analysis System</h3>
-                    <p class="text-slate-600 mb-4">An autonomous, serverless workflow I designed and built to automate market risk analysis, using Google's Gemini AI to produce structured risk assessments and distribute intelligence to live dashboards.</p>
-                    <button data-modal-target="modal-ai-risk" class="font-semibold text-accent hover:underline">View Full Case Study →</button>
-                    
-                    <a href="https://jumbled-sailfish-519.notion.site/AI-Powered-Market-Risk-Analysis-System-2325fcaeeca78064bb96c1dae2260f91?pvs=143" 
-                       target="_blank" 
-                       class="notion-link">
-                        <i class="fas fa-file-alt mr-2"></i> View Full Notion Page ↗
-                    </a>
-                </div>
-
-                <div class="case-study-card p-8" style="border-left-color: var(--secondary);">
-                    <h3 class="font-bold text-2xl mb-2 text-slate-800">New Product Launch: "SmartBank" - Sierra Leone</h3>
-                    <p class="text-slate-600 mb-4">Led the end-to-end program management for a new technology service in an international market, orchestrating funders, partners, and government ministries to deliver a sustainable service that now supports over 5,000 women annually.</p>
-                    <button data-modal-target="modal-smartbank" class="font-semibold text-accent hover:underline">View Full Case Study →</button>
-                </div>
-
-                <div class="case-study-card p-8" style="border-left-color: var(--primary);">
-                    <h3 class="font-bold text-2xl mb-2 text-slate-800">GTM Initiative: "OneBox" with the Gates Foundation</h3>
-                    <p class="text-slate-600 mb-4">Directed a high-stakes GTM initiative for a maternal health logistics product, architecting the core operational system that enabled the program to scale to over 470 health facilities and complete more than 25,000 essential medicine deliveries.</p>
-                    <button data-modal-target="modal-onebox" class="font-semibold text-accent hover:underline">View Full Case Study →</button>
-                </div>
-
+        <!-- ABOUT -->
+        <section id="about" class="py-16">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold section-title relative">About</h2>
             </div>
-        </section>
-        
-        <section id="innovation-lab" class="py-20">
-            <h2 class="text-3xl font-bold text-center section-title relative">Innovation Lab: Product Concepts</h2>
-            <div class="case-study-card bg-white rounded-xl shadow-lg overflow-hidden p-6 md:p-8 mt-12 max-w-5xl mx-auto" style="border-left-color: #8b5cf6;">
-                <p class="text-slate-600 mb-6 text-lg max-w-3xl text-left">
-                    As Director of Innovation, my core responsibility was to lead the development of the next generation of health technology solutions. Below are high-level concepts for some of the confidential products I have led from ideation and business case development through to prototyping and GTM strategy.
+            <div class="max-w-4xl mx-auto text-lg text-slate-600 space-y-5 leading-relaxed">
+                <p>
+                    I am an operations professional, executive-support partner, and project coordinator. I run things end to end for the people I work with &mdash; founders, lean teams, agencies, and remote businesses &mdash; and my signature is turning manual, scattered work into clean, repeatable systems that keep running without me hovering over them.
                 </p>
-                
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div class="bg-slate-50 p-4 rounded-lg border">
-                        <div class="flex items-center mb-2">
-                            <div class="bg-red-100 text-red-700 p-2 rounded-full mr-2"><i class="fas fa-tint text-sm"></i></div>
-                            <h4 class="font-bold text-md text-slate-800">SmartBank</h4>
-                        </div>
-                        <p class="text-sm text-slate-600 mb-2">A modular blood safety solution combining physical infrastructure, digital records, and a BOTM model for traceability and screening.</p>
-                        <span class="text-xs font-semibold text-yellow-600 bg-yellow-100 px-2 py-1 rounded-full">Operational</span>
+                <p>
+                    My foundation was built across an operations career that started in 2020 and ran through five years at LifeBank, where I climbed from Sales Operations to Director of Innovation. I designed and deployed the systems behind government health supply chains and maternal-health delivery: fleet management, last-mile distribution, AI-driven demand prediction, and the financing layer that ties them together. Several of those products are live today, serving hundreds of primary healthcare facilities.
+                </p>
+                <p>
+                    Since 2025 I have moved deliberately into remote, globally distributed work. I am currently in the executive-support space, and I am moving toward what I do best: project coordination, back-end operations, systems and infrastructure, and the kind of force-multiplier work that ties an ecosystem together &mdash; reaching out to people, following through, owning tasks end to end, and building the AI-powered workflows that make small operations run like bigger ones. I keep solving operational problems wherever the next one is.
+                </p>
+            </div>
+        </section>
+
+        <!-- ARC / TIMELINE -->
+        <section id="arc" class="py-16 bg-slate-100 rounded-2xl px-6 md:px-12">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold section-title relative">My Arc</h2>
+                <p class="text-slate-600 max-w-3xl mx-auto mt-4">One through-line: systems that connect vision to execution &mdash; increasingly across distance.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Movement 1 -->
+                <div class="arc-card p-7">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="arc-dot"></span>
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">2020 &ndash; 2025</span>
                     </div>
-                    <div class="bg-slate-50 p-4 rounded-lg border">
-                        <div class="flex items-center mb-2">
-                            <div class="bg-blue-100 text-blue-700 p-2 rounded-full mr-2"><i class="fas fa-cogs text-sm"></i></div>
-                            <h4 class="font-bold text-md text-slate-800">QUIP</h4>
-                        </div>
-                        <p class="text-sm text-slate-600 mb-2">A cloud platform for medical equipment lifecycle management, connecting facilities with certified engineers and verified vendors.</p>
-                        <span class="text-xs font-semibold text-blue-600 bg-blue-100 px-2 py-1 rounded-full">Pilot</span>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">The Foundation</h3>
+                    <p class="text-slate-600 text-base">An operations career that began in 2020 and grew through five years at LifeBank, from Sales Operations to Director of Innovation. Built the systems behind health supply chains and maternal-health delivery: fleet, last-mile, AI prediction, financing. Where the depth was earned.</p>
+                </div>
+                <!-- Movement 2 -->
+                <div class="arc-card p-7">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="arc-dot"></span>
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">2025 &ndash; 2026</span>
                     </div>
-                    <div class="bg-slate-50 p-4 rounded-lg border">
-                        <div class="flex items-center mb-2">
-                            <div class="bg-purple-100 text-purple-700 p-2 rounded-full mr-2"><i class="fas fa-shield-alt text-sm"></i></div>
-                            <h4 class="font-bold text-md text-slate-800">Guardian</h4>
-                        </div>
-                        <p class="text-sm text-slate-600 mb-2">A decentralised CPD platform for healthcare professionals, offering training, digital credentials, and skill-based job matching.</p>
-                        <span class="text-xs font-semibold text-gray-600 bg-gray-200 px-2 py-1 rounded-full">Concept</span>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">The Pivot &mdash; Going Remote</h3>
+                    <p class="text-slate-600 text-base">A deliberate move into remote, globally distributed work. Proving the same operating discipline holds across time zones, async tools, and international teams &mdash; not just one office.</p>
+                </div>
+                <!-- Movement 3 -->
+                <div class="arc-card p-7">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="arc-dot"></span>
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">2026 &ndash; Present</span>
                     </div>
-                    <div class="bg-slate-50 p-4 rounded-lg border">
-                        <div class="flex items-center mb-2">
-                            <div class="bg-teal-100 text-teal-700 p-2 rounded-full mr-2"><i class="fas fa-network-wired text-sm"></i></div>
-                            <h4 class="font-bold text-md text-slate-800">OneSystem</h4>
-                        </div>
-                        <p class="text-sm text-slate-600 mb-2">An integrated supply chain platform connecting logistics, distribution, and funding across public health systems.</p>
-                        <span class="text-xs font-semibold text-green-600 bg-green-100 px-2 py-1 rounded-full">Deployed</span>
-                    </div>
-                    <div class="bg-slate-50 p-4 rounded-lg border">
-                        <div class="flex items-center mb-2">
-                            <div class="bg-yellow-100 text-yellow-700 p-2 rounded-full mr-2"><i class="fas fa-ambulance text-sm"></i></div>
-                            <h4 class="font-bold text-md text-slate-800">First Response</h4>
-                        </div>
-                        <p class="text-sm text-slate-600 mb-2">A digital coordination tool connecting emergency responders and ambulances to reduce dispatch delays and optimise routes.</p>
-                        <span class="text-xs font-semibold text-yellow-600 bg-yellow-100 px-2 py-1 rounded-full">In Testing</span>
-                    </div>
-                    <div class="bg-slate-50 p-4 rounded-lg border">
-                        <div class="flex items-center mb-2">
-                            <div class="bg-pink-100 text-pink-700 p-2 rounded-full mr-2"><i class="fas fa-female text-sm"></i></div>
-                            <h4 class="font-bold text-md text-slate-800">Her Cover</h4>
-                        </div>
-                        <p class="text-sm text-slate-600 mb-2">A system to reduce catastrophic health costs for women with chronic conditions via insurance enrollment and subsidised care.</p>
-                        <span class="text-xs font-semibold text-gray-600 bg-gray-200 px-2 py-1 rounded-full">Concept</span>
-                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 mb-2">The Present &mdash; Building in the Remote Economy</h3>
+                    <p class="text-slate-600 text-base">Founding Employee Preps, teaching product management at Internsify, and running remote GTM and lead work for a US consultancy. No longer looking for remote work &mdash; building inside it.</p>
                 </div>
             </div>
         </section>
 
-        <section id="skills" class="py-20 bg-slate-100 rounded-2xl">
-            <h2 class="text-3xl font-bold text-center section-title relative">Skills & Expertise</h2>
-            <div class="max-w-6xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="skill-category-card p-6">
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4"><i class="fas fa-chess-king text-blue-600 text-xl"></i></div>
-                        <h3 class="text-xl font-bold text-slate-800">Strategic Leadership</h3>
+        <!-- PORTFOLIO -->
+        <section id="portfolio" class="py-20">
+            <div class="text-center mb-4">
+                <h2 class="text-3xl font-bold section-title relative">Selected Work</h2>
+            </div>
+            <p class="text-center text-slate-600 max-w-3xl mx-auto mb-12">Two flagship systems I architected and deployed, plus the AI workflow tooling I build today. Click any card for the full case study, videos, and live embeds.</p>
+
+            <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+
+                <!-- CARD: OneSystem evolution -->
+                <div class="case-study-card p-8" style="border-left-color: var(--primary);">
+                    <span class="tag-pill mb-2" style="background:#ecfdf5;color:#065f46;">Government Health Supply Chain</span>
+                    <h3 class="text-2xl font-bold text-slate-800 mt-2 mb-3">LifeFleet &rarr; OneBox &rarr; OneSystem</h3>
+                    <p class="text-slate-600 mb-5">How I grew a fleet-management tool into an interoperable, AI-powered infrastructure stack for primary healthcare &mdash; entering low, expanding to full-stack.</p>
+                    <div class="mb-5 flex flex-wrap items-center gap-y-2">
+                        <span class="evo-step"><i class="fas fa-truck"></i> LifeFleet</span>
+                        <span class="evo-arrow"><i class="fas fa-arrow-right"></i></span>
+                        <span class="evo-step"><i class="fas fa-box"></i> OneBox</span>
+                        <span class="evo-arrow"><i class="fas fa-arrow-right"></i></span>
+                        <span class="evo-step"><i class="fas fa-layer-group"></i> OneSystem</span>
                     </div>
-                    <ul class="text-slate-600 space-y-2 list-disc list-inside">
-                        <li>GTM Execution</li>
-                        <li>Product Launch Management</li>
-                        <li>First-Principles Thinking</li>
-                    </ul>
+                    <div class="grid grid-cols-3 gap-3 mb-5">
+                        <div class="bg-slate-50 p-3 rounded-lg text-center border"><p class="text-2xl font-bold" style="color:var(--primary)">400+</p><p class="text-xs text-slate-500">Facilities</p></div>
+                        <div class="bg-slate-50 p-3 rounded-lg text-center border"><p class="text-2xl font-bold" style="color:var(--primary)">1,000+</p><p class="text-xs text-slate-500">Health Workers</p></div>
+                        <div class="bg-slate-50 p-3 rounded-lg text-center border"><p class="text-2xl font-bold" style="color:var(--primary)">31%</p><p class="text-xs text-slate-500">Uptime Gain</p></div>
+                    </div>
+                    <button data-modal="modal-onesystem" class="open-modal font-semibold inline-flex items-center" style="color:var(--accent)">
+                        View Case Study <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                    </button>
                 </div>
-                <div class="skill-category-card p-6">
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4"><i class="fas fa-cogs text-green-600 text-xl"></i></div>
-                        <h3 class="text-xl font-bold text-slate-800">Operational Excellence</h3>
+
+                <!-- CARD: SmartBank evolution -->
+                <div class="case-study-card p-8" style="border-left-color: var(--secondary);">
+                    <span class="tag-pill mb-2" style="background:#fef2f2;color:#991b1b;">Maternal Health &bull; Blood Safety</span>
+                    <h3 class="text-2xl font-bold text-slate-800 mt-2 mb-3">SmartCentre &rarr; SmartBank</h3>
+                    <p class="text-slate-600 mb-5">How I redesigned a screening lab into a tiered system &mdash; the container, the technology that runs it, and the operations that keep it sustainable. Deployed in Sierra Leone.</p>
+                    <div class="mb-5 flex flex-wrap items-center gap-y-2">
+                        <span class="evo-step" style="background:#fef2f2;color:#991b1b;border-color:#fecaca;"><i class="fas fa-vial"></i> SmartCentre</span>
+                        <span class="evo-arrow"><i class="fas fa-arrow-right"></i></span>
+                        <span class="evo-step" style="background:#fef2f2;color:#991b1b;border-color:#fecaca;"><i class="fas fa-microchip"></i> + Technology</span>
+                        <span class="evo-arrow"><i class="fas fa-arrow-right"></i></span>
+                        <span class="evo-step" style="background:#fef2f2;color:#991b1b;border-color:#fecaca;"><i class="fas fa-gears"></i> SmartBank</span>
                     </div>
-                    <ul class="text-slate-600 space-y-2 list-disc list-inside">
-                        <li>Scalable Systems Design</li>
-                        <li>Process Optimization & Automation</li>
-                        <li>Data & Insights</li>
-                    </ul>
+                    <div class="grid grid-cols-3 gap-3 mb-5">
+                        <div class="bg-slate-50 p-3 rounded-lg text-center border"><p class="text-2xl font-bold text-red-600">3</p><p class="text-xs text-slate-500">Deployments</p></div>
+                        <div class="bg-slate-50 p-3 rounded-lg text-center border"><p class="text-2xl font-bold text-red-600">5k+</p><p class="text-xs text-slate-500">Women / Year</p></div>
+                        <div class="bg-slate-50 p-3 rounded-lg text-center border"><p class="text-2xl font-bold text-red-600">1st</p><p class="text-xs text-slate-500">Of its Kind</p></div>
+                    </div>
+                    <button data-modal="modal-smartbank" class="open-modal font-semibold inline-flex items-center" style="color:var(--accent)">
+                        View Case Study <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                    </button>
                 </div>
-                <div class="skill-category-card p-6">
-                    <div class="flex items-center mb-4">
-                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4"><i class="fas fa-project-diagram text-purple-600 text-xl"></i></div>
-                        <h3 class="text-xl font-bold text-slate-800">Cross-Functional Management</h3>
+
+                <!-- CARD: AI Risk -->
+                <div class="case-study-card p-8" style="border-left-color: var(--accent);">
+                    <span class="tag-pill mb-2" style="background:#eff6ff;color:#1e40af;">AI Workflow &bull; Built Solo</span>
+                    <h3 class="text-2xl font-bold text-slate-800 mt-2 mb-3">AI-Powered Market Risk Analysis</h3>
+                    <p class="text-slate-600 mb-5">An autonomous, serverless workflow I designed and coded from scratch: fetches news, runs Gemini AI risk assessment, pushes structured intelligence to a live dashboard and task system.</p>
+                    <div class="mb-5">
+                        <span class="tag-pill" style="background:#eff6ff;color:#1e40af;">Google Apps Script</span>
+                        <span class="tag-pill" style="background:#eff6ff;color:#1e40af;">Gemini API</span>
+                        <span class="tag-pill" style="background:#eff6ff;color:#1e40af;">Airtable</span>
+                        <span class="tag-pill" style="background:#eff6ff;color:#1e40af;">Asana</span>
                     </div>
-                    <ul class="text-slate-600 space-y-2 list-disc list-inside">
-                        <li>Hybrid Project Management</li>
-                        <li>Stakeholder & Partner Relations</li>
-                        <li>Team Leadership & Coaching</li>
-                    </ul>
+                    <button data-modal="modal-ai-risk" class="open-modal font-semibold inline-flex items-center" style="color:var(--accent)">
+                        View Case Study <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                    </button>
+                </div>
+
+                <!-- CARD: Psalms -->
+                <div class="case-study-card p-8" style="border-left-color: #475569;">
+                    <span class="tag-pill mb-2" style="background:#f1f5f9;color:#334155;">Founder &bull; Systems Case Study</span>
+                    <h3 class="text-2xl font-bold text-slate-800 mt-2 mb-3">Psalms Laundry &mdash; Built to Run Without Me</h3>
+                    <p class="text-slate-600 mb-5">A subscription laundry business I founded and systematized: live mobile ops app, weighted unit-economics model, full SOP library. I stepped back from operator to system architect &mdash; the staff run it.</p>
+                    <div class="mb-5">
+                        <span class="tag-pill" style="background:#f1f5f9;color:#334155;">AppSheet</span>
+                        <span class="tag-pill" style="background:#f1f5f9;color:#334155;">Financial Modeling</span>
+                        <span class="tag-pill" style="background:#f1f5f9;color:#334155;">SOP Design</span>
+                        <span class="tag-pill" style="background:#f1f5f9;color:#334155;">Process Automation</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3 mb-5">
+                        <div class="bg-slate-50 p-3 rounded-lg text-center border"><p class="text-2xl font-bold text-slate-700">&#8358;3.98M+</p><p class="text-xs text-slate-500">Tracked Revenue</p></div>
+                        <div class="bg-slate-50 p-3 rounded-lg text-center border"><p class="text-2xl font-bold text-slate-700">~56%</p><p class="text-xs text-slate-500">Best-Month Margin</p></div>
+                        <div class="bg-slate-50 p-3 rounded-lg text-center border"><p class="text-2xl font-bold text-slate-700">418+</p><p class="text-xs text-slate-500">Orders Tracked</p></div>
+                    </div>
+                    <button data-modal="modal-psalms" class="open-modal font-semibold inline-flex items-center" style="color:var(--accent)">
+                        View Case Study <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- NOW: current chapter -->
+            <div class="max-w-6xl mx-auto mt-16">
+                <div class="text-center mb-2">
+                    <h3 class="text-2xl font-bold text-slate-800">Now: Building in the Remote Economy</h3>
+                    <p class="text-slate-600 max-w-3xl mx-auto mt-3 mb-10">Past looking for remote work &mdash; building inside it. A venture, a teaching engagement, and remote client work.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+
+                    <!-- Employee Preps (lead) -->
+                    <div class="case-study-card p-8" style="border-left-color: var(--primary);">
+                        <span class="tag-pill mb-2" style="background:#ecfdf5;color:#065f46;">Founder</span>
+                        <h3 class="text-xl font-bold text-slate-800 mt-2 mb-3">Employee Preps</h3>
+                        <p class="text-slate-600 mb-4">A placement-and-training system that makes Nigerian talent globally employable in real remote roles &mdash; not just VA gigs. Each person prepared strengthens the base for the next: a compounding network effect.</p>
+                        <div class="mb-2">
+                            <span class="tag-pill" style="background:#ecfdf5;color:#065f46;">Repeatable Pipeline</span>
+                            <span class="tag-pill" style="background:#ecfdf5;color:#065f46;">Career Coaching</span>
+                            <span class="tag-pill" style="background:#ecfdf5;color:#065f46;">Placement</span>
+                        </div>
+                    </div>
+
+                    <!-- Internsify (modal) -->
+                    <div class="case-study-card p-8" style="border-left-color: var(--accent);">
+                        <span class="tag-pill mb-2" style="background:#eff6ff;color:#1e40af;">Curriculum Designer &amp; Lead Instructor</span>
+                        <h3 class="text-xl font-bold text-slate-800 mt-2 mb-3">Internsify Africa</h3>
+                        <p class="text-slate-600 mb-4">A paid Product Management cohort I designed and taught end to end &mdash; built on a proprietary framework that teaches product judgment as a repeatable muscle. From blank page to job-ready students.</p>
+                        <button data-modal="modal-internsify" class="open-modal font-semibold inline-flex items-center" style="color:var(--accent)">
+                            View Case Study <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                        </button>
+                    </div>
+
+                    <!-- Remote GTM -->
+                    <div class="case-study-card p-8" style="border-left-color: #92400e;">
+                        <span class="tag-pill mb-2" style="background:#fffbeb;color:#92400e;">Remote &bull; Client Work</span>
+                        <h3 class="text-xl font-bold text-slate-800 mt-2 mb-3">Remote GTM &amp; Lead Specialist</h3>
+                        <p class="text-slate-600 mb-4">GTM outreach and lead management for a US consultancy, working across CRM and outreach systems. Operations-grade rigor brought to the top of the funnel, fully remote and async.</p>
+                        <div class="mb-2">
+                            <span class="tag-pill" style="background:#fffbeb;color:#92400e;">GTM Outreach</span>
+                            <span class="tag-pill" style="background:#fffbeb;color:#92400e;">Lead Management</span>
+                            <span class="tag-pill" style="background:#fffbeb;color:#92400e;">CRM Systems</span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </section>
 
-        <section id="tech-skills" class="py-20">
-            <h2 class="text-3xl font-bold text-center section-title relative">Technical Proficiencies</h2>
-            <div class="max-w-6xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- SKILLS -->
+        <section id="skills" class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold section-title relative">How I Work</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
                 <div class="tech-category-card p-6 text-center">
-                    <div class="w-14 h-14 bg-slate-200 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-sitemap text-slate-600 text-xl"></i></div>
-                    <h3 class="font-bold text-lg text-slate-800 mb-2">Systems Design</h3>
-                    <p class="text-slate-600 text-sm">Process Mapping, SOPs & OKRs, Operational Frameworks</p>
+                    <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style="background:#ecfdf5;"><i class="fas fa-sitemap text-xl" style="color:var(--primary)"></i></div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Operations Leadership</h3>
+                    <p class="text-slate-600 text-sm">Process design, SOPs, quality control, and the systems that make work repeatable</p>
                 </div>
                 <div class="tech-category-card p-6 text-center">
-                    <div class="w-14 h-14 bg-slate-200 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-robot text-slate-600 text-xl"></i></div>
-                    <h3 class="font-bold text-lg text-slate-800 mb-2">Automation & Workflow</h3>
-                    <p class="text-slate-600 text-sm">Google Apps Script (JS), REST APIs & JSON, Zapier & Airtable</p>
+                    <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style="background:#f5f3ff;"><i class="fas fa-user-tie text-xl" style="color:#5b21b6"></i></div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Executive Support</h3>
+                    <p class="text-slate-600 text-sm">Running things end to end for founders and leaders: scheduling, follow-through, the load off their plate</p>
                 </div>
                 <div class="tech-category-card p-6 text-center">
-                    <div class="w-14 h-14 bg-slate-200 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-chart-pie text-slate-600 text-xl"></i></div>
-                    <h3 class="font-bold text-lg text-slate-800 mb-2">Data & Insights</h3>
-                    <p class="text-slate-600 text-sm">SQL, Advanced Spreadsheet Modeling, BI Tools</p>
+                    <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style="background:#eff6ff;"><i class="fas fa-diagram-project text-xl" style="color:var(--accent)"></i></div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Project Coordination</h3>
+                    <p class="text-slate-600 text-sm">A central point of coordination: keeping people, tasks, and timelines moving together, with real follow-through</p>
                 </div>
                 <div class="tech-category-card p-6 text-center">
-                    <div class="w-14 h-14 bg-slate-200 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-brain text-slate-600 text-xl"></i></div>
-                    <h3 class="font-bold text-lg text-slate-800 mb-2">AI & LLMs</h3>
-                    <p class="text-slate-600 text-sm">Google Gemini API, Prompt Engineering, AI Workflow Design</p>
+                    <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style="background:#f0fdfa;"><i class="fas fa-cubes text-xl" style="color:#0f766e"></i></div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Systems &amp; Infrastructure</h3>
+                    <p class="text-slate-600 text-sm">The force-multiplier work: putting pieces together, building back-end structure, owning tasks end to end</p>
+                </div>
+                <div class="tech-category-card p-6 text-center">
+                    <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style="background:#fef2f2;"><i class="fas fa-brain text-xl text-red-600"></i></div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">AI Workflow</h3>
+                    <p class="text-slate-600 text-sm">Designing AI-powered workflows: Gemini API, prompt engineering, Apps Script automation</p>
+                </div>
+                <div class="tech-category-card p-6 text-center">
+                    <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style="background:#fffbeb;"><i class="fas fa-globe text-xl" style="color:#92400e"></i></div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Remote &amp; Async</h3>
+                    <p class="text-slate-600 text-sm">Reliable across time zones and tools: distributed teams, async-first collaboration</p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto mt-6">
+                <div class="tech-category-card p-6 text-center md:col-start-2">
+                    <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style="background:#f1f5f9;"><i class="fas fa-truck-fast text-xl" style="color:#475569"></i></div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Specialist Depth</h3>
+                    <p class="text-slate-600 text-sm">Supply chain &amp; last-mile logistics, plus GTM outreach and lead management when a role needs it</p>
                 </div>
             </div>
         </section>
 
-        <section id="pursuits" class="py-20 bg-slate-100 rounded-2xl">
-             <h2 class="text-3xl font-bold text-center section-title relative">Personal Pursuits</h2>
-             <p class="text-center text-slate-600 max-w-3xl mx-auto mb-12">Beyond my professional work, I am passionate about personal growth and community building. These pursuits reflect my commitment to continuous learning and empowering others.</p>
-             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                 <div class="pursuit-card text-center p-8">
-                     <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-running text-red-600 text-2xl"></i></div>
-                     <h3 class="font-bold text-xl text-slate-800 mb-3">Marathon Runner</h3>
-                     <p class="text-slate-600 text-base">Avid ultra runner. These long distance experiences have taught me discipline, resilience, and the power of perseverance in achieving long-term goals.</p>
-                 </div>
-                 <div class="pursuit-card text-center p-8">
-                     <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-chalkboard-teacher text-blue-600 text-2xl"></i></div>
-                     <h3 class="font-bold text-xl text-slate-800 mb-3">Leadership Training</h3>
-                     <p class="text-slate-600 text-base">Developed "Leading Without a Title," a leadership training module that empowers entry-level professionals to take initiative and build influence.</p>
-                 </div>
-                 <div class="pursuit-card text-center p-8">
-                     <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-handshake text-green-600 text-2xl"></i></div>
-                     <h3 class="font-bold text-xl text-slate-800 mb-3">B2B Sales Techniques</h3>
-                     <p class="text-slate-600 text-base">Developed "Pull, Don't Push," training modules focusing on relationship-based sales approaches for stronger customer engagement.</p>
-                 </div>
-             </div>
-        </section>
-
+        <!-- CONTACT -->
         <section id="contact" class="py-20 text-center">
             <h2 class="text-3xl font-bold text-slate-800">Let's Connect</h2>
-            <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">I am passionate about applying my systems-building expertise to new challenges and industries. If you are working on complex operational problems, I would be glad to connect.</p>
+            <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">I give founders and lean teams their time back &mdash; running operations and coordinating projects end to end, supporting where it counts, and building the systems that keep things moving. If that's what you need, let's talk.</p>
             <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="mailto:usiaphreteheri@gmail.com" style="background: linear-gradient(135deg, var(--primary), var(--secondary));" class="text-white font-semibold py-3 px-8 rounded-lg shadow-lg inline-flex items-center justify-center contact-btn">
                     <i class="fas fa-envelope mr-2"></i> Email Me
@@ -406,7 +483,7 @@
 
     <footer class="bg-slate-800 text-slate-400 text-center py-8">
         <div class="container mx-auto px-6">
-            <p class="mb-4">© 2025 Akpoteheri Tony Usiaphre. All Rights Reserved.</p>
+            <p class="mb-4">&copy; 2026 Akpoteheri Tony Usiaphre. All Rights Reserved.</p>
             <div class="flex justify-center space-x-6">
                 <a href="mailto:usiaphreteheri@gmail.com" class="text-slate-400 hover:text-white transition"><i class="fas fa-envelope fa-lg"></i></a>
                 <a href="https://www.linkedin.com/in/teeheri" target="_blank" class="text-slate-400 hover:text-white transition"><i class="fab fa-linkedin-in fa-lg"></i></a>
@@ -414,80 +491,91 @@
         </div>
     </footer>
 
-    <div id="modal-ai-risk" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden modal-overlay p-4">
-        <div class="bg-white rounded-lg shadow-2xl m-4 max-w-4xl w-full max-h-[90vh] overflow-y-auto modal-content">
+    <!-- ============ MODALS ============ -->
+
+    <!-- MODAL: OneSystem -->
+    <div id="modal-onesystem" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden modal-overlay p-4">
+        <div class="bg-white rounded-lg shadow-2xl m-4 max-w-5xl w-full max-h-[90vh] overflow-y-auto modal-content">
             <div class="p-6 sm:p-8 sticky top-0 bg-white border-b border-gray-200 flex justify-between items-center">
-                <h2 class="text-2xl font-bold text-slate-900">Case Study: AI-Powered Market Risk Analysis</h2>
-                <button class="close-modal text-gray-500 hover:text-gray-800 text-3xl">×</button>
+                <h2 class="text-2xl font-bold text-slate-900">Case Study: LifeFleet &rarr; OneBox &rarr; OneSystem</h2>
+                <button class="close-modal text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
             </div>
             <div class="p-6 sm:p-8">
-                <section class="mb-8">
-                    <h3 class="text-xl font-semibold text-slate-800 mb-3">Project Overview</h3>
-                    <p class="text-slate-700 leading-relaxed">An autonomous, serverless workflow I designed and built from scratch to automate market risk analysis. The system fetches daily news headlines, uses Google's Gemini AI to produce a structured risk assessment, and distributes the intelligence to a live Airtable dashboard and a proactive Asana task management system.</p>
-                </section>
-                <hr class="my-6">
-                <section class="mb-8">
-                    <h3 class="text-xl font-semibold text-slate-800 mb-3">The Challenge</h3>
-                    <p class="text-slate-700 leading-relaxed">Traditional market analysis for a new region is manual, time-consuming, and fails to capture real-time shifts in the business environment.</p>
-                </section>
-                <hr class="my-6">
-                <section class="mb-8">
-                    <h3 class="text-xl font-semibold text-slate-800 mb-3">My Role & System Architecture</h3>
-                    <p class="text-slate-700 leading-relaxed mb-4">As the sole architect, I designed and coded the end-to-end intelligence pipeline using Google Apps Script. The workflow:</p>
-                    <ol class="list-decimal list-inside space-y-2 text-slate-700">
-                        <li><strong>Triggers daily</strong> to fetch news from pre-configured RSS feeds.</li>
-                        <li><strong>Sends headlines to the Gemini AI API</strong> within a carefully engineered prompt to return a risk analysis in a strict JSON format.</li>
-                        <li><strong>Distributes the structured data</strong> via API to an Airtable dashboard and an Asana project for proactive alerts.</li>
-                    </ol>
-                </section>
-                <hr class="my-6">
-                <section class="mb-8">
-                    <h3 class="text-xl font-semibold text-slate-800 mb-3">Final System View</h3>
-                    <p class="text-slate-700 leading-relaxed mb-4">The live Airtable database below is the central hub for viewing the daily, AI-generated risk analysis.</p>
-                    <div class="bg-slate-100 p-2 rounded-lg shadow-inner border w-full h-96">
-                         <iframe class="airtable-embed w-full h-full" src="https://airtable.com/embed/appSxSqgTD1DDDyg8/shrpuzvTxwykf24hP" frameborder="0" onmousewheel="" ></iframe>
+                <p class="text-md text-slate-500 mb-2">LifeBank &bull; Government primary healthcare supply chain &bull; Live across Kaduna, Yobe &amp; Kano</p>
+                <div class="mb-8 flex flex-wrap items-center gap-y-2">
+                    <span class="evo-step"><i class="fas fa-truck"></i> LifeFleet</span>
+                    <span class="evo-arrow"><i class="fas fa-arrow-right"></i></span>
+                    <span class="evo-step"><i class="fas fa-box"></i> OneBox</span>
+                    <span class="evo-arrow"><i class="fas fa-arrow-right"></i></span>
+                    <span class="evo-step"><i class="fas fa-layer-group"></i> OneSystem (OneFleet + OneBox + OneWallet)</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div>
+                        <section class="mb-8">
+                            <h3 class="text-xl font-semibold text-slate-800 mb-3">The Strategy</h3>
+                            <p class="text-slate-700 leading-relaxed mb-3">I designed a deliberate low-friction entry, then expanded into full-stack infrastructure:</p>
+                            <ul class="list-disc list-inside space-y-2 text-slate-700">
+                                <li><strong>LifeFleet (enter low):</strong> A fleet-management system for government health agencies (DMAs), moving products from central stores to facilities. Prove we manage their assets better &mdash; lower cost, higher reliability &mdash; with a small team.</li>
+                                <li><strong>OneBox (expand):</strong> Last-mile distribution to facilities with visibility, AI demand prediction, and local 3PL delivery. This is where donor funding came in.</li>
+                                <li><strong>OneWallet (complete):</strong> The financing layer &mdash; requisition funding and payments &mdash; closing the loop into an end-to-end system.</li>
+                            </ul>
+                        </section>
+                        <section>
+                            <h3 class="text-xl font-semibold text-slate-800 mb-3">My Role</h3>
+                            <p class="text-slate-700 leading-relaxed">I architected and deployed the initial phase of this backward, end-to-end integration. On consolidation into OneSystem, LifeFleet was rebranded OneFleet, joined by OneBox and OneWallet into one interoperable stack for primary healthcare centres.</p>
+                        </section>
                     </div>
-                </section>
-                <hr class="my-6">
-                 <section>
-                    <h3 class="text-xl font-semibold text-slate-800 mb-3">Key Challenges & Resolutions</h3>
-                    <p class="text-slate-700 leading-relaxed mb-4">This project involved significant real-world debugging:</p>
-                    <ul class="list-disc list-inside space-y-2 text-slate-700">
-                        <li><strong>API Errors (404s & 403s):</strong> Resolved API model rejection and access-denied errors by iteratively testing model versions and re-configuring API token permission scopes.</li>
-                        <li><strong>Data Parsing Failures:</strong> Implemented robust extraction logic using regex to guarantee a clean JSON string for parsing, overcoming AI response formatting inconsistencies.</li>
-                    </ul>
-                </section>
+                    <div>
+                        <section class="mb-8">
+                            <h3 class="text-xl font-semibold text-slate-800 mb-3">Scale &amp; Impact</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-slate-50 p-4 rounded-lg text-center border"><p class="text-3xl font-bold" style="color:var(--primary)">400+</p><p class="text-sm text-slate-500">Facilities Onboarded</p></div>
+                                <div class="bg-slate-50 p-4 rounded-lg text-center border"><p class="text-3xl font-bold" style="color:var(--primary)">1,070+</p><p class="text-sm text-slate-500">Active Users</p></div>
+                                <div class="bg-slate-50 p-4 rounded-lg text-center border"><p class="text-3xl font-bold" style="color:var(--primary)">31%</p><p class="text-sm text-slate-500">Uptime Improvement</p></div>
+                                <div class="bg-slate-50 p-4 rounded-lg text-center border"><p class="text-3xl font-bold" style="color:var(--primary)">510+</p><p class="text-sm text-slate-500">Health Workers Trained</p></div>
+                            </div>
+                        </section>
+                        <section>
+                            <h3 class="text-xl font-semibold text-slate-800 mb-3">Project Video &mdash; OneBox</h3>
+                            <div class="video-container shadow-lg">
+                                <iframe class="rounded-lg" src="https://www.youtube.com/embed/1nI_ir6ubAQ" title="OneBox video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
+                            <a href="https://lifebank.com" target="_blank" class="notion-link">Live product: OneSystem <i class="fas fa-external-link-alt ml-2 text-xs"></i></a>
+                        </section>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- MODAL: SmartBank -->
     <div id="modal-smartbank" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden modal-overlay p-4">
         <div class="bg-white rounded-lg shadow-2xl m-4 max-w-5xl w-full max-h-[90vh] overflow-y-auto modal-content">
             <div class="p-6 sm:p-8 sticky top-0 bg-white border-b border-gray-200 flex justify-between items-center">
-                <h2 class="text-2xl font-bold text-slate-900">New Product Launch: "SmartBank" - Sierra Leone</h2>
-                <button class="close-modal text-gray-500 hover:text-gray-800 text-3xl">×</button>
+                <h2 class="text-2xl font-bold text-slate-900">Case Study: SmartCentre &rarr; SmartBank</h2>
+                <button class="close-modal text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
             </div>
             <div class="p-6 sm:p-8">
-                <p class="text-md text-slate-500 mb-8">Partners: Partners In Health (PIH), MSD for Mothers</p>
+                <p class="text-md text-slate-500 mb-8">LifeBank &bull; Maternal health &amp; blood safety &bull; Deployed across Nigeria, Kenya &amp; Sierra Leone; full tiered SmartBank system in Sierra Leone</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                     <div>
                         <section class="mb-8">
                             <h3 class="text-xl font-semibold text-slate-800 mb-3">The Challenge</h3>
-                            <p class="text-slate-700 leading-relaxed">To improve maternal health outcomes in Sierra Leone by providing reliable, local access to safe blood in a region with limited advanced health infrastructure.</p>
+                            <p class="text-slate-700 leading-relaxed">Improve maternal health outcomes by providing reliable, local access to safe blood in regions with limited advanced health infrastructure &mdash; and make the facility sustainable beyond launch.</p>
                         </section>
                         <section>
-                            <h3 class="text-xl font-semibold text-slate-800 mb-3">My Role & Approach</h3>
-                            <p class="text-slate-700 leading-relaxed mb-4">I led this project from the ground up, turning an idea into a fully operational facility. My role covered three core areas:</p>
+                            <h3 class="text-xl font-semibold text-slate-800 mb-3">What I Built &mdash; A Tiered System</h3>
+                            <p class="text-slate-700 leading-relaxed mb-3">I redesigned a standalone screening lab into a three-layer system, and renamed the product SmartBank:</p>
                             <ul class="list-disc list-inside space-y-2 text-slate-700">
-                                <li><strong>System Design:</strong> I designed the entire operational plan, from clinical workflows and international procurement to the compliance framework.</li>
-                                <li><strong>Partner Management:</strong> I managed the key partnerships between international funders, local implementers, and the Ministry of Health.</li>
-                                <li><strong>Team Building:</strong> I built and trained the local project team to run the center independently for long-term success.</li>
+                                <li><strong>SmartCentre:</strong> the physical container &mdash; the lab itself.</li>
+                                <li><strong>The Technology:</strong> the platform that runs screening, processes, and data.</li>
+                                <li><strong>The Operations Layer:</strong> the system that brings blood in and out, plus the people, project team, and processes that keep the centre running sustainably long-term. None of this existed before my redesign.</li>
                             </ul>
                         </section>
                     </div>
                     <div>
                         <section class="mb-8">
-                            <h3 class="text-xl font-semibold text-slate-800 mb-3">Project Scale & Impact</h3>
+                            <h3 class="text-xl font-semibold text-slate-800 mb-3">Scale &amp; Impact</h3>
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="bg-slate-50 p-4 rounded-lg text-center border"><p class="text-3xl font-bold text-red-600">5k+</p><p class="text-sm text-slate-500">Women Served Annually</p></div>
                                 <div class="bg-slate-50 p-4 rounded-lg text-center border"><p class="text-3xl font-bold text-red-600">57%</p><p class="text-sm text-slate-500">Improvement in Blood Safety</p></div>
@@ -496,10 +584,10 @@
                             </div>
                         </section>
                         <section>
-                             <h3 class="text-xl font-semibold text-slate-800 mb-3">Project Video</h3>
-                             <div class="video-container shadow-lg">
-                                <iframe class="rounded-lg" src="https://www.youtube.com/embed/sV47ZXP9lZQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                             </div>
+                            <h3 class="text-xl font-semibold text-slate-800 mb-3">Project Video &mdash; SmartBank</h3>
+                            <div class="video-container shadow-lg">
+                                <iframe class="rounded-lg" src="https://www.youtube.com/embed/sV47ZXP9lZQ" title="SmartBank video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                            </div>
                         </section>
                     </div>
                 </div>
@@ -507,45 +595,138 @@
         </div>
     </div>
 
-    <div id="modal-onebox" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden modal-overlay p-4">
+    <!-- MODAL: AI Risk -->
+    <div id="modal-ai-risk" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden modal-overlay p-4">
+        <div class="bg-white rounded-lg shadow-2xl m-4 max-w-4xl w-full max-h-[90vh] overflow-y-auto modal-content">
+            <div class="p-6 sm:p-8 sticky top-0 bg-white border-b border-gray-200 flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-slate-900">Case Study: AI-Powered Market Risk Analysis</h2>
+                <button class="close-modal text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
+            </div>
+            <div class="p-6 sm:p-8">
+                <section class="mb-8">
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">Project Overview</h3>
+                    <p class="text-slate-700 leading-relaxed">An autonomous, serverless workflow I designed and built from scratch to automate market risk analysis. It fetches daily news headlines, uses Google's Gemini AI to produce a structured risk assessment, and distributes the intelligence to a live Airtable dashboard and a proactive Asana task system.</p>
+                </section>
+                <hr class="my-6">
+                <section class="mb-8">
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">My Role &amp; Architecture</h3>
+                    <p class="text-slate-700 leading-relaxed mb-4">As sole architect, I coded the end-to-end pipeline in Google Apps Script. The workflow:</p>
+                    <ol class="list-decimal list-inside space-y-2 text-slate-700">
+                        <li><strong>Triggers daily</strong> to fetch news from pre-configured RSS feeds.</li>
+                        <li><strong>Sends headlines to the Gemini API</strong> within an engineered prompt returning strict JSON.</li>
+                        <li><strong>Distributes structured data</strong> via API to an Airtable dashboard and an Asana project for proactive alerts.</li>
+                    </ol>
+                </section>
+                <hr class="my-6">
+                <section class="mb-8">
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">Live System View</h3>
+                    <p class="text-slate-700 leading-relaxed mb-4">The live Airtable database below is the central hub for the daily, AI-generated risk analysis.</p>
+                    <div class="bg-slate-100 p-2 rounded-lg shadow-inner border w-full h-96">
+                        <iframe class="airtable-embed w-full h-full" src="https://airtable.com/embed/appSxSqgTD1DDDyg8/shrpuzvTxwykf24hP" frameborder="0" onmousewheel=""></iframe>
+                    </div>
+                </section>
+                <hr class="my-6">
+                <section>
+                    <h3 class="text-xl font-semibold text-slate-800 mb-3">Key Challenges &amp; Resolutions</h3>
+                    <ul class="list-disc list-inside space-y-2 text-slate-700">
+                        <li><strong>API Errors (404s &amp; 403s):</strong> Resolved model rejection and access errors by iteratively testing model versions and re-configuring token permission scopes.</li>
+                        <li><strong>Data Parsing Failures:</strong> Implemented robust regex extraction to guarantee clean JSON, overcoming AI response formatting inconsistencies.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Internsify -->
+    <div id="modal-internsify" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden modal-overlay p-4">
         <div class="bg-white rounded-lg shadow-2xl m-4 max-w-5xl w-full max-h-[90vh] overflow-y-auto modal-content">
             <div class="p-6 sm:p-8 sticky top-0 bg-white border-b border-gray-200 flex justify-between items-center">
-                <h2 class="text-2xl font-bold text-slate-900">GTM Initiative: "OneBox" with the Gates Foundation</h2>
-                <button class="close-modal text-gray-500 hover:text-gray-800 text-3xl">×</button>
+                <h2 class="text-2xl font-bold text-slate-900">Internsify Africa &mdash; Product Management Program</h2>
+                <button class="close-modal text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
             </div>
-             <div class="p-6 sm:p-8">
-                <p class="text-md text-slate-500 mb-8">Partners: Bill & Melinda Gates Foundation, BOAT Foundation</p>
+            <div class="p-6 sm:p-8">
+                <p class="text-md text-slate-500 mb-8">Curriculum Designer &amp; Lead Instructor &bull; Paid cohort, contract &bull; In-person + remote, Lagos &bull; ~13 weeks (Apr&ndash;Jul 2026)</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                     <div>
                         <section class="mb-8">
-                            <h3 class="text-xl font-semibold text-slate-800 mb-3">The Challenge</h3>
-                            <p class="text-slate-700 leading-relaxed">To solve the critical issue of life-threatening medicine stockouts at remote Primary Healthcare Centres across Northern Nigeria, which directly impacted community health and trust in the healthcare system.</p>
+                            <h3 class="text-xl font-semibold text-slate-800 mb-3">The Brief</h3>
+                            <p class="text-slate-700 leading-relaxed">Take a small group of motivated, early-career students with no formal PM background and make them job-ready in real product thinking over a single intensive program. I owned the full arc: curriculum, every teaching artifact, live sessions, the feedback loop, and the capstone.</p>
                         </section>
                         <section>
-                            <h3 class="text-xl font-semibold text-slate-800 mb-3">My Role & Approach</h3>
-                            <p class="text-slate-700 leading-relaxed mb-4">As the project lead, I architected the core Go-to-Market strategy and operational framework. My responsibilities included:</p>
+                            <h3 class="text-xl font-semibold text-slate-800 mb-3">My Ownership</h3>
                             <ul class="list-disc list-inside space-y-2 text-slate-700">
-                                <li><strong>GTM & Logistics Design:</strong> Building a hybrid, tech-enabled logistics model from scratch to ensure reliable last-mile delivery.</li>
-                                <li><strong>Program Rollout:</strong> Managing the end-to-end implementation across three states, overseeing risks, compliance, and field team coordination.</li>
-                                <li><strong>Capacity Building:</strong> Developing and delivering the training curriculum that enabled digital adoption for over 500 healthcare workers.</li>
+                                <li><strong>Curriculum design:</strong> built the full multi-week arc from scratch.</li>
+                                <li><strong>Proprietary framework:</strong> developed the teaching system the course runs on.</li>
+                                <li><strong>All materials:</strong> session boards, task cards, instructor notes, student guides, capstone briefs.</li>
+                                <li><strong>Live delivery &amp; 1:1 coaching:</strong> led every session, calibrated feedback to each student.</li>
+                                <li><strong>Stakeholder management:</strong> owned scope, timeline, and outcomes with program leadership.</li>
                             </ul>
                         </section>
                     </div>
                     <div>
                         <section class="mb-8">
-                            <h3 class="text-xl font-semibold text-slate-800 mb-3">Project Scale & Impact</h3>
+                            <h3 class="text-xl font-semibold text-slate-800 mb-3">The Framework I Built</h3>
+                            <p class="text-slate-700 leading-relaxed mb-3">A repeatable way to reason about product decisions, reinforced through live application:</p>
+                            <ul class="space-y-2 text-slate-700">
+                                <li><strong>Read</strong> &mdash; four signals off real pilot data: Outcome, Output, Counter, Qualitative.</li>
+                                <li><strong>Decide</strong> &mdash; Scale, Iterate, Kill, or Extend, pressure-tested through Clarity, Evidence, Completeness.</li>
+                                <li><strong>Communicate</strong> &mdash; a five-block decision memo (BLUF first), tradeoffs along four axes.</li>
+                                <li><strong>Defend</strong> &mdash; defending the call live under challenge: the muscle that separates theory from doing the job.</li>
+                            </ul>
+                        </section>
+                        <section>
+                            <h3 class="text-xl font-semibold text-slate-800 mb-3">Outcomes</h3>
+                            <ul class="list-disc list-inside space-y-2 text-slate-700">
+                                <li>A complete PM curriculum delivered from a blank page, on a consistent design system.</li>
+                                <li>Students moved from zero PM background to running the full decision loop and defending it live.</li>
+                                <li>Each student drove an end-to-end capstone &mdash; real user interviews through a written spec &mdash; producing demonstrable portfolio work.</li>
+                                <li>Strongest student reached interview-ready standard.</li>
+                            </ul>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Psalms -->
+    <div id="modal-psalms" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 hidden modal-overlay p-4">
+        <div class="bg-white rounded-lg shadow-2xl m-4 max-w-5xl w-full max-h-[90vh] overflow-y-auto modal-content">
+            <div class="p-6 sm:p-8 sticky top-0 bg-white border-b border-gray-200 flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-slate-900">Psalms Laundry &mdash; A Business Built to Run Without Me</h2>
+                <button class="close-modal text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
+            </div>
+            <div class="p-6 sm:p-8">
+                <p class="text-md text-slate-500 mb-8">Founder &amp; Director &bull; Subscription laundry &amp; cleaning, Yaba, Lagos &bull; CAC incorporated 2026</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div>
+                        <section class="mb-8">
+                            <h3 class="text-xl font-semibold text-slate-800 mb-3">The Problem &amp; Approach</h3>
+                            <p class="text-slate-700 leading-relaxed">A real Lagos gap: reliable, quality laundry at predictable prices with zero customer-side logistics. I ran it informally for ~2 years, then rebuilt it as a system-driven, subscription-first business with documented SOPs, a trained team, and a live operations app &mdash; designed so it runs without me.</p>
+                        </section>
+                        <section>
+                            <h3 class="text-xl font-semibold text-slate-800 mb-3">Systems I Built</h3>
+                            <ul class="list-disc list-inside space-y-2 text-slate-700">
+                                <li><strong>Live mobile ops app (AppSheet):</strong> three field forms &mdash; pickup, sorting, QC &mdash; with four live automations driving order status.</li>
+                                <li><strong>Financial model:</strong> a 31-tab workbook with monthly P&amp;L and a weighted piece-count system built from unit economics up.</li>
+                                <li><strong>SOP library:</strong> intake, washing, QC, packaging, delivery, and complaints, plus a pricing handbook and 37-type unit-counting guide.</li>
+                                <li><strong>Customer &amp; order database:</strong> 5 linked tables, 59 customers, order-level breakdowns.</li>
+                            </ul>
+                        </section>
+                    </div>
+                    <div>
+                        <section class="mb-8">
+                            <h3 class="text-xl font-semibold text-slate-800 mb-3">Scale &amp; Outcomes</h3>
                             <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-slate-50 p-4 rounded-lg text-center border"><p class="text-3xl font-bold text-green-600">470+</p><p class="text-sm text-slate-500">Primary Care Centres</p></div>
-                                <div class="bg-slate-50 p-4 rounded-lg text-center border"><p class="text-3xl font-bold text-green-600">25k+</p><p class="text-sm text-slate-500">Medicines Delivered</p></div>
-                                <div class="bg-slate-50 p-4 rounded-lg text-center border"><p class="text-3xl font-bold text-green-600">510+</p><p class="text-sm text-slate-500">Healthcare Workers Trained</p></div>
-                                <div class="bg-slate-50 p-4 rounded-lg text-center border"><p class="text-3xl font-bold text-green-600">85%</p><p class="text-sm text-slate-500">Increase in Supply Chain Visibility</p></div>
+                                <div class="bg-slate-50 p-4 rounded-lg text-center border"><p class="text-3xl font-bold text-slate-700">&#8358;3.98M+</p><p class="text-sm text-slate-500">Tracked Revenue (12 mo)</p></div>
+                                <div class="bg-slate-50 p-4 rounded-lg text-center border"><p class="text-3xl font-bold text-slate-700">~56%</p><p class="text-sm text-slate-500">Best-Month Gross Margin</p></div>
+                                <div class="bg-slate-50 p-4 rounded-lg text-center border"><p class="text-3xl font-bold text-slate-700">59</p><p class="text-sm text-slate-500">Customers Tracked</p></div>
+                                <div class="bg-slate-50 p-4 rounded-lg text-center border"><p class="text-3xl font-bold text-slate-700">2</p><p class="text-sm text-slate-500">Staff Trained &amp; Running It</p></div>
                             </div>
                         </section>
                         <section>
-                             <h3 class="text-xl font-semibold text-slate-800 mb-3">Project Video</h3>
-                             <div class="video-container shadow-lg">
-                                <iframe class="rounded-lg" src="https://www.youtube.com/embed/1nI_ir6ubAQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                             </div>
+                            <h3 class="text-xl font-semibold text-slate-800 mb-3">The Lesson</h3>
+                            <p class="text-slate-700 leading-relaxed">When unclear tracking once cost a subscriber, I designed a weighted unit-counting system to remove the ambiguity entirely. The throughline of all my work: when something breaks, build the system that prevents it recurring &mdash; then hand it to the people who run it day to day.</p>
                         </section>
                     </div>
                 </div>
@@ -555,66 +736,48 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // --- Mobile Menu Logic ---
+            // Mobile menu
             const menuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
-            if (menuButton && mobileMenu) {
-                menuButton.addEventListener('click', function() {
-                    mobileMenu.classList.toggle('hidden');
-                });
-                document.querySelectorAll('.mobile-nav-link').forEach(link => {
-                    link.addEventListener('click', () => {
-                        mobileMenu.classList.add('hidden');
+            if (menuButton) {
+                menuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            }
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+            });
+
+            // Modal open/close
+            const openButtons = document.querySelectorAll('.open-modal');
+            const closeButtons = document.querySelectorAll('.close-modal');
+            const overlays = document.querySelectorAll('.modal-overlay');
+
+            function closeAll() {
+                overlays.forEach(o => {
+                    o.classList.add('hidden');
+                    // stop videos by reloading their src
+                    o.querySelectorAll('iframe').forEach(f => {
+                        const s = f.getAttribute('src');
+                        f.setAttribute('src', s);
                     });
                 });
+                document.body.style.overflow = '';
             }
 
-            // --- Modal Logic ---
-            const modalTriggers = document.querySelectorAll('[data-modal-target]');
-            
-            modalTriggers.forEach(trigger => {
-                trigger.addEventListener('click', () => {
-                    const targetId = trigger.getAttribute('data-modal-target');
-                    const modal = document.getElementById(targetId);
+            openButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.getAttribute('data-modal');
+                    const modal = document.getElementById(id);
                     if (modal) {
                         modal.classList.remove('hidden');
                         document.body.style.overflow = 'hidden';
                     }
                 });
             });
-
-            const closeButtons = document.querySelectorAll('.close-modal');
-            closeButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const modal = button.closest('.modal-overlay');
-                    if (modal) {
-                        modal.classList.add('hidden');
-                        document.body.style.overflow = 'auto';
-                        // Stop any playing videos
-                        const iframe = modal.querySelector('iframe');
-                        if (iframe) {
-                            const tempSrc = iframe.src;
-                            iframe.src = tempSrc; 
-                        }
-                    }
-                });
+            closeButtons.forEach(btn => btn.addEventListener('click', closeAll));
+            overlays.forEach(o => {
+                o.addEventListener('click', e => { if (e.target === o) closeAll(); });
             });
-
-            const modalOverlays = document.querySelectorAll('.modal-overlay');
-            modalOverlays.forEach(overlay => {
-                overlay.addEventListener('click', (event) => {
-                    if (event.target === overlay) {
-                        overlay.classList.add('hidden');
-                        document.body.style.overflow = 'auto';
-                         // Stop any playing videos
-                        const iframe = overlay.querySelector('iframe');
-                        if (iframe) {
-                            const tempSrc = iframe.src;
-                            iframe.src = tempSrc;
-                        }
-                    }
-                });
-            });
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
         });
     </script>
 </body>
