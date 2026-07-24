@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Psalms Laundry — Live Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-deep:#0B2545;
+  --navy-mid:#13315C;
+  --navy-slate:#1F4E79;
+  --cyan:#3ECEF0;
+  --cyan-light:#7FDCEC;
+  --cyan-pale:#CFEFF7;
+  --orange:#FFA94D;
+  --orange-deep:#F07C1E;
+  --lemon:#FFD23F;
+  --text:#F4F8FB;
+  --muted:#8FA9C4;
+  --line:rgba(143,169,196,.20);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:
+    radial-gradient(1100px 620px at 78% -8%, rgba(62,206,240,.13), transparent 62%),
+    radial-gradient(820px 520px at 4% 104%, rgba(255,169,77,.10), transparent 58%),
+    var(--navy-deep);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,sans-serif;
+  min-height:100vh;
+  padding:28px 22px 64px;
+  line-height:1.5;
+}
+.wrap{max-width:1240px;margin:0 auto}
+
+/* ---------- header ---------- */
+header{
+  display:flex;flex-wrap:wrap;gap:18px;
+  align-items:flex-end;justify-content:space-between;
+  padding-bottom:22px;margin-bottom:26px;
+  border-bottom:1px solid var(--line);
+}
+.brand h1{
+  font-family:Archivo,sans-serif;font-weight:800;
+  font-size:clamp(1.9rem,4.6vw,2.9rem);
+  letter-spacing:-.028em;line-height:1.02;
+}
+.brand h1 span{color:var(--cyan)}
+.tag{
+  color:var(--muted);font-size:.83rem;margin-top:7px;
+  font-family:'IBM Plex Mono',monospace;letter-spacing:.03em;
+}
+.live{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:'IBM Plex Mono',monospace;font-size:.7rem;
+  text-transform:uppercase;letter-spacing:.13em;
+  color:var(--cyan-pale);
+  background:rgba(62,206,240,.09);
+  border:1px solid rgba(62,206,240,.28);
+  padding:7px 13px;border-radius:999px;white-space:nowrap;
+}
+.dot{
+  width:6px;height:6px;border-radius:50%;background:var(--cyan);
+  box-shadow:0 0 0 0 rgba(62,206,240,.65);
+  animation:pulse 2.4s infinite;
+}
+@keyframes pulse{
+  70%{box-shadow:0 0 0 9px rgba(62,206,240,0)}
+  100%{box-shadow:0 0 0 0 rgba(62,206,240,0)}
+}
+
+/* ---------- KPI ribbon ---------- */
+.kpis{
+  display:grid;gap:13px;margin-bottom:26px;
+  grid-template-columns:repeat(auto-fit,minmax(178px,1fr));
+}
+.kpi{
+  background:linear-gradient(158deg,rgba(19,49,92,.92),rgba(11,37,69,.72));
+  border:1px solid var(--line);border-radius:13px;
+  padding:17px 17px 15px;position:relative;overflow:hidden;
+}
+.kpi::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--accent,var(--cyan));
+}
+.kpi .lab{
+  font-family:'IBM Plex Mono',monospace;font-size:.64rem;
+  text-transform:uppercase;letter-spacing:.13em;color:var(--muted);
+  margin-bottom:9px;
+}
+.kpi .val{
+  font-family:Archivo,sans-serif;font-weight:700;
+  font-size:clamp(1.28rem,2.5vw,1.72rem);
+  letter-spacing:-.022em;line-height:1.06;
+  font-variant-numeric:tabular-nums;
+}
+.kpi .sub{font-size:.73rem;color:var(--muted);margin-top:6px}
+
+/* ---------- panels ---------- */
+.panel{
+  background:linear-gradient(158deg,rgba(19,49,92,.62),rgba(11,37,69,.42));
+  border:1px solid var(--line);border-radius:15px;
+  padding:20px;margin-bottom:20px;
+}
+.phead{
+  display:flex;flex-wrap:wrap;gap:12px;
+  align-items:baseline;justify-content:space-between;margin-bottom:16px;
+}
+.phead h2{
+  font-family:Archivo,sans-serif;font-weight:700;font-size:1.02rem;
+  letter-spacing:-.012em;
+}
+.phead p{font-size:.77rem;color:var(--muted);max-width:52ch}
+
+.legend{display:flex;flex-wrap:wrap;gap:15px}
+.lg{
+  display:flex;align-items:center;gap:6px;
+  font-family:'IBM Plex Mono',monospace;font-size:.68rem;
+  color:var(--muted);letter-spacing:.04em;
+}
+.sw{width:11px;height:11px;border-radius:3px;flex:none}
+
+/* ---------- chart ---------- */
+.chartbox{position:relative;width:100%;overflow:hidden}
+svg{width:100%;height:auto;display:block;overflow:visible}
+.gl{stroke:var(--line);stroke-width:1}
+.ax{
+  font-family:'IBM Plex Mono',monospace;font-size:9.5px;
+  fill:var(--muted);letter-spacing:.02em;
+}
+.bar{transition:opacity .16s ease}
+.chartbox:hover .bar{opacity:.42}
+.chartbox .bcol:hover .bar{opacity:1}
+.hit{fill:transparent;cursor:pointer}
+.bcol:hover .hit{fill:rgba(62,206,240,.07)}
+
+.tip{
+  position:absolute;pointer-events:none;opacity:0;
+  transition:opacity .13s ease;z-index:20;
+  background:rgba(6,24,45,.97);
+  border:1px solid rgba(62,206,240,.34);
+  border-radius:9px;padding:10px 12px;min-width:172px;
+  box-shadow:0 12px 32px rgba(0,0,0,.5);
+}
+.tip.on{opacity:1}
+.tip h4{
+  font-family:Archivo,sans-serif;font-size:.79rem;font-weight:700;
+  margin-bottom:8px;padding-bottom:7px;
+  border-bottom:1px solid var(--line);
+}
+.tip .r{
+  display:flex;justify-content:space-between;gap:16px;
+  font-size:.71rem;margin-top:4px;
+  font-family:'IBM Plex Mono',monospace;
+  font-variant-numeric:tabular-nums;
+}
+.tip .r span:first-child{color:var(--muted)}
+.tip .r b{font-weight:600}
+
+/* ---------- controls ---------- */
+.ctrls{display:flex;flex-wrap:wrap;gap:7px}
+.tgl{
+  font-family:'IBM Plex Mono',monospace;font-size:.68rem;
+  text-transform:uppercase;letter-spacing:.09em;
+  background:transparent;color:var(--muted);
+  border:1px solid var(--line);border-radius:7px;
+  padding:6px 11px;cursor:pointer;transition:all .15s ease;
+}
+.tgl:hover{color:var(--text);border-color:rgba(62,206,240,.4)}
+.tgl[aria-pressed="true"]{
+  color:var(--navy-deep);background:var(--cyan);
+  border-color:var(--cyan);font-weight:600;
+}
+.tgl:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+/* ---------- table ---------- */
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:760px}
+th{
+  font-family:'IBM Plex Mono',monospace;font-size:.64rem;
+  text-transform:uppercase;letter-spacing:.1em;color:var(--muted);
+  text-align:right;padding:9px 11px;
+  border-bottom:1px solid var(--line);white-space:nowrap;
+  position:sticky;top:0;background:#0d2949;
+}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:#0d2949}
+th:first-child{z-index:2}
+td{
+  padding:9px 11px;text-align:right;font-size:.79rem;
+  border-bottom:1px solid rgba(143,169,196,.09);
+  font-variant-numeric:tabular-nums;
+  font-family:'IBM Plex Mono',monospace;
+}
+tbody tr:hover td{background:rgba(62,206,240,.055)}
+tbody tr:hover td:first-child{background:#12365f}
+tr.tot td{
+  border-top:2px solid var(--cyan);border-bottom:none;
+  font-weight:600;color:var(--cyan-pale);padding-top:12px;
+}
+.pos{color:var(--orange)}
+.warn{color:var(--lemon)}
+
+/* ---------- states ---------- */
+.state{
+  padding:42px 20px;text-align:center;color:var(--muted);
+  font-family:'IBM Plex Mono',monospace;font-size:.83rem;
+}
+.state b{display:block;color:var(--text);margin-bottom:7px;font-size:.92rem}
+.state a{color:var(--cyan)}
+footer{
+  margin-top:26px;padding-top:18px;border-top:1px solid var(--line);
+  color:var(--muted);font-size:.72rem;
+  font-family:'IBM Plex Mono',monospace;
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
+}
+@media(max-width:640px){
+  body{padding:20px 14px 46px}
+  .panel{padding:15px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <h1>Psalms <span>Laundry</span></h1>
+      <div class="tag" id="range">Loading trading history…</div>
+    </div>
+    <div class="live"><span class="dot"></span><span id="stamp">Connecting</span></div>
+  </header>
+
+  <div id="app">
+    <div class="state"><b>Loading live data</b>Reading the published Summary sheet.</div>
+  </div>
+
+  <footer>
+    <span>Psalms Laundry Services · Lagos</span>
+    <span>Live from Google Sheets · refresh to update</span>
+  </footer>
+</div>
+
+<script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT6ovzZB0pjOWnsUyQceQ8wwqNcAx2oZShjY866qa6_ul-11tGXOVi5lm0_L7GeQI5Bxc7gDF3m0x4p/pub?gid=564354619&single=true&output=csv";
+
+const C = {cyan:'#3ECEF0',cyanLight:'#7FDCEC',cyanPale:'#CFEFF7',orange:'#FFA94D',
+           orangeDeep:'#F07C1E',lemon:'#FFD23F',muted:'#8FA9C4'};
+
+/* ---------- CSV parsing (quote-aware) ---------- */
+function parseCSV(t){
+  const rows=[];let row=[],cell='',q=false;
+  t=t.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  for(let i=0;i<t.length;i++){
+    const c=t[i];
+    if(q){
+      if(c==='"'){ if(t[i+1]==='"'){cell+='"';i++;} else q=false; }
+      else cell+=c;
+    }else{
+      if(c==='"')q=true;
+      else if(c===','){row.push(cell);cell='';}
+      else if(c==='\n'){row.push(cell);rows.push(row);row=[];cell='';}
+      else cell+=c;
+    }
+  }
+  if(cell!==''||row.length){row.push(cell);rows.push(row);}
+  return rows.filter(r=>r.some(x=>x.trim()!==''));
+}
+/* strips currency, commas, %, spaces, NBSP */
+const num = v => {
+  if(v==null) return 0;
+  const s=String(v).replace(/[₦N,%\s\u00A0]/g,'').trim();
+  if(s===''||s==='-') return 0;
+  const n=parseFloat(s);
+  return isNaN(n)?0:n;
+};
+const fmtN = n => '₦'+Math.round(n).toLocaleString('en-NG');
+const fmtK = n => n>=1e6 ? '₦'+(n/1e6).toFixed(n>=1e7?0:1)+'M'
+                : n>=1e3 ? '₦'+Math.round(n/1e3)+'k' : '₦'+Math.round(n);
+
+/* find a column by fuzzy name match — survives reordering/renaming */
+function idx(head, ...keys){
+  const norm = s => String(s).toLowerCase().replace(/[^a-z%]/g,'');
+  const H = head.map(norm);
+  for(const k of keys){
+    const nk = norm(k);
+    let i = H.indexOf(nk);
+    if(i>=0) return i;
+    i = H.findIndex(h=>h.startsWith(nk)&&nk.length>2);
+    if(i>=0) return i;
+  }
+  return -1;
+}
+
+/* ---------- load ---------- */
+fetch(CSV_URL)
+  .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
+  .then(render)
+  .catch(e=>{
+    document.getElementById('app').innerHTML =
+      '<div class="state"><b>Could not reach the Summary sheet</b>'+
+      'Check that the sheet is still published to the web: File → Share → Publish to web → Summary → CSV.<br><br>'+
+      '<span style="opacity:.6">'+e.message+'</span></div>';
+    document.getElementById('stamp').textContent='Offline';
+  });
+
+function render(text){
+  const rows = parseCSV(text);
+  if(rows.length<2){document.getElementById('app').innerHTML='<div class="state"><b>Sheet is empty</b>No rows returned.</div>';return;}
+
+  const head = rows[0];
+  const cMonth = idx(head,'Month');
+  const cOrd   = idx(head,'Orders');
+  const cPcs   = idx(head,'Pieces');
+  const cUnits = idx(head,'Units');
+  const cSubs  = idx(head,'Subs','Subscribers');
+  const cWalk  = idx(head,'Walk-ins','Walkins','Walk ins');
+  const cRev   = idx(head,'Revenue (N)','Revenue');
+  const cExp   = idx(head,'Expenses (N)','Expenses');
+  const cGP    = idx(head,'Gross Profit (N)','Gross Profit');
+  const cMar   = idx(head,'Margin %','Margin');
+  const cAvg   = idx(head,'Avg Order (N)','Avg Order');
+
+  const all = rows.slice(1).map(r=>({
+    month:(r[cMonth]||'').trim(),
+    orders:num(r[cOrd]), pieces:num(r[cPcs]), units:num(r[cUnits]),
+    subs:num(r[cSubs]), walk:num(r[cWalk]),
+    rev:num(r[cRev]), exp:num(r[cExp]), gp:num(r[cGP]),
+    margin:num(r[cMar]), avg:num(r[cAvg])
+  })).filter(d=>d.month);
+
+  const totalRow = all.find(d=>/^total$/i.test(d.month));
+  // traded months only: drop TOTAL and the zero-activity future months
+  const data = all.filter(d=>!/^total$/i.test(d.month) && d.orders>0);
+  if(!data.length){document.getElementById('app').innerHTML='<div class="state"><b>No trading months found</b>Every row has zero orders.</div>';return;}
+
+  const T = totalRow || {
+    orders:data.reduce((s,d)=>s+d.orders,0), pieces:data.reduce((s,d)=>s+d.pieces,0),
+    units:data.reduce((s,d)=>s+d.units,0), subs:data.reduce((s,d)=>s+d.subs,0),
+    walk:data.reduce((s,d)=>s+d.walk,0), rev:data.reduce((s,d)=>s+d.rev,0),
+    exp:data.reduce((s,d)=>s+d.exp,0), gp:data.reduce((s,d)=>s+d.gp,0)
+  };
+  const tMargin = T.rev? T.gp/T.rev*100 : 0;
+  const tAvg    = T.orders? T.rev/T.orders : 0;
+  const last    = data[data.length-1];
+  const best    = data.reduce((a,b)=>b.rev>a.rev?b:a);
+
+  document.getElementById('range').textContent =
+    data[0].month+' — '+last.month+' · '+data.length+' trading months';
+  document.getElementById('stamp').textContent =
+    'Live · '+new Date().toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+
+  const kpi=(lab,val,sub,accent)=>
+    `<div class="kpi" style="--accent:${accent}"><div class="lab">${lab}</div><div class="val">${val}</div><div class="sub">${sub}</div></div>`;
+
+  document.getElementById('app').innerHTML = `
+    <div class="kpis">
+      ${kpi('Revenue',fmtN(T.rev),data.length+' months trading',C.cyan)}
+      ${kpi('Gross profit',fmtN(T.gp),tMargin.toFixed(1)+'% margin',C.orange)}
+      ${kpi('Expenses',fmtN(T.exp),(T.rev?(T.exp/T.rev*100).toFixed(1):0)+'% of revenue',C.orangeDeep)}
+      ${kpi('Orders',Math.round(T.orders).toLocaleString(),fmtN(tAvg)+' average',C.cyanLight)}
+      ${kpi('Pieces washed',Math.round(T.pieces).toLocaleString(),Math.round(T.units).toLocaleString()+' billable units',C.lemon)}
+      ${kpi('Best month',best.month,fmtN(best.rev),C.cyanPale)}
+    </div>
+
+    <div class="panel">
+      <div class="phead">
+        <div>
+          <h2>Revenue, cost and profit by month</h2>
+          <p>Each bar is one month. Blue is revenue, orange is what was left after expenses. Hover a month for the full picture.</p>
+        </div>
+        <div class="legend">
+          <span class="lg"><span class="sw" style="background:${C.cyan}"></span>Revenue</span>
+          <span class="lg"><span class="sw" style="background:${C.orange}"></span>Gross profit</span>
+          <span class="lg"><span class="sw" style="background:${C.orangeDeep}"></span>Expenses</span>
+          <span class="lg"><span class="sw" style="background:${C.lemon}"></span>Margin %</span>
+        </div>
+      </div>
+      <div class="chartbox" id="cash"></div>
+    </div>
+
+    <div class="panel">
+      <div class="phead">
+        <div>
+          <h2>Where the orders come from</h2>
+          <p>Subscriber orders against walk-in orders, month by month.</p>
+        </div>
+        <div class="ctrls">
+          <button class="tgl" data-mix="mix" aria-pressed="true">Subs vs walk-ins</button>
+          <button class="tgl" data-mix="vol" aria-pressed="false">Pieces &amp; units</button>
+        </div>
+      </div>
+      <div class="chartbox" id="mix"></div>
+    </div>
+
+    <div class="panel">
+      <div class="phead">
+        <div><h2>Monthly detail</h2><p>Every trading month, straight from the Summary sheet.</p></div>
+      </div>
+      <div class="tscroll">
+        <table>
+          <thead><tr>
+            <th>Month</th><th>Orders</th><th>Pieces</th><th>Units</th>
+            <th>Subs</th><th>Walk-ins</th><th>Revenue</th><th>Expenses</th>
+            <th>Gross profit</th><th>Margin</th><th>Avg order</th>
+          </tr></thead>
+          <tbody>
+            ${data.map(d=>`<tr>
+              <td>${d.month}</td><td>${d.orders}</td><td>${d.pieces.toLocaleString()}</td>
+              <td>${d.units.toLocaleString()}</td><td>${d.subs}</td><td>${d.walk}</td>
+              <td>${fmtN(d.rev)}</td><td>${fmtN(d.exp)}</td>
+              <td class="pos">${fmtN(d.gp)}</td>
+              <td class="${d.margin<50?'warn':''}">${d.margin.toFixed(1)}%</td>
+              <td>${fmtN(d.avg)}</td></tr>`).join('')}
+            <tr class="tot">
+              <td>Total</td><td>${Math.round(T.orders).toLocaleString()}</td>
+              <td>${Math.round(T.pieces).toLocaleString()}</td><td>${Math.round(T.units).toLocaleString()}</td>
+              <td>${Math.round(T.subs)}</td><td>${Math.round(T.walk)}</td>
+              <td>${fmtN(T.rev)}</td><td>${fmtN(T.exp)}</td><td>${fmtN(T.gp)}</td>
+              <td>${tMargin.toFixed(1)}%</td><td>${fmtN(tAvg)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+
+  drawCash(data);
+  drawMix(data,'mix');
+  document.querySelectorAll('[data-mix]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('[data-mix]').forEach(x=>x.setAttribute('aria-pressed','false'));
+      b.setAttribute('aria-pressed','true');
+      drawMix(data,b.dataset.mix);
+    });
+  });
+}
+
+/* ---------- tooltip helper ---------- */
+function attachTip(host, colEls, builder){
+  const tip=document.createElement('div');
+  tip.className='tip'; host.appendChild(tip);
+  colEls.forEach(({el,d})=>{
+    const show=e=>{
+      tip.innerHTML=builder(d);
+      tip.classList.add('on');
+      const hb=host.getBoundingClientRect();
+      let x=e.clientX-hb.left+14, y=e.clientY-hb.top-12;
+      const tb=tip.getBoundingClientRect();
+      if(x+tb.width>hb.width) x=e.clientX-hb.left-tb.width-14;
+      if(x<0) x=6;
+      if(y<0) y=6;
+      if(y+tb.height>hb.height) y=hb.height-tb.height-6;
+      tip.style.left=x+'px'; tip.style.top=y+'px';
+    };
+    el.addEventListener('mousemove',show);
+    el.addEventListener('mouseenter',show);
+    el.addEventListener('mouseleave',()=>tip.classList.remove('on'));
+  });
+  host.addEventListener('mouseleave',()=>tip.classList.remove('on'));
+}
+const row=(l,v,c)=>`<div class="r"><span>${l}</span><b${c?` style="color:${c}"`:''}>${v}</b></div>`;
+
+/* ---------- chart 1: revenue / profit / expenses / margin ---------- */
+function drawCash(data){
+  const host=document.getElementById('cash');
+  const W=1120,H=430,ml=64,mr=48,mt=22,mb=54;
+  const iw=W-ml-mr, ih=H-mt-mb;
+  const maxV=Math.max(...data.map(d=>d.rev))*1.12;
+  const step=iw/data.length, bw=Math.min(step*.30,26);
+  const x=i=>ml+step*i+step/2;
+  const y=v=>mt+ih-(v/maxV)*ih;
+  const ym=v=>mt+ih-(v/100)*ih;
+
+  let g='';
+  for(let i=0;i<=4;i++){
+    const v=maxV*i/4, yy=y(v);
+    g+=`<line class="gl" x1="${ml}" y1="${yy}" x2="${W-mr}" y2="${yy}"/>
+        <text class="ax" x="${ml-9}" y="${yy+3.5}" text-anchor="end">${fmtK(v)}</text>
+        <text class="ax" x="${W-mr+9}" y="${yy+3.5}" fill="${C.lemon}" opacity=".7">${i*25}%</text>`;
+  }
+
+  const every=data.length>16?2:1;
+  let bars='',cols=[];
+  data.forEach((d,i)=>{
+    const cx=x(i);
+    const rH=Math.max(ih-(y(d.rev)-mt),1);
+    const gH=Math.max(ih-(y(Math.max(d.gp,0))-mt),1);
+    const eH=Math.max(ih-(y(d.exp)-mt),1);
+    bars+=`<g class="bcol" data-i="${i}">
+      <rect class="hit" x="${cx-step/2}" y="${mt}" width="${step}" height="${ih}"/>
+      <rect class="bar" x="${cx-bw*1.05}" y="${y(d.rev)}" width="${bw*.92}" height="${rH}" rx="2.5" fill="${C.cyan}"/>
+      <rect class="bar" x="${cx-bw*.05}" y="${y(Math.max(d.gp,0))}" width="${bw*.92}" height="${gH}" rx="2.5" fill="${C.orange}"/>
+      <rect class="bar" x="${cx+bw*.95}" y="${y(d.exp)}" width="${bw*.55}" height="${eH}" rx="2" fill="${C.orangeDeep}" opacity=".78"/>
+    </g>`;
+    if(i%every===0||i===data.length-1)
+      bars+=`<text class="ax" x="${cx}" y="${H-mb+19}" text-anchor="middle">${d.month.replace(' ',"'").replace(/'(\d{2})\d{2}/,"'$1")}</text>`;
+  });
+
+  const mPath=data.map((d,i)=>(i?'L':'M')+x(i)+' '+ym(d.margin)).join(' ');
+  const mDots=data.map((d,i)=>`<circle cx="${x(i)}" cy="${ym(d.margin)}" r="2.6" fill="${C.lemon}"/>`).join('');
+
+  host.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly revenue, gross profit, expenses and margin">
+    ${g}
+    <line class="gl" x1="${ml}" y1="${mt+ih}" x2="${W-mr}" y2="${mt+ih}" stroke="${C.muted}" stroke-opacity=".45"/>
+    ${bars}
+    <path d="${mPath}" fill="none" stroke="${C.lemon}" stroke-width="1.7" stroke-opacity=".85" stroke-linejoin="round"/>
+    ${mDots}
+  </svg>`;
+
+  const cols2=[...host.querySelectorAll('.bcol')].map(el=>({el,d:data[+el.dataset.i]}));
+  attachTip(host,cols2,d=>`<h4>${d.month}</h4>
+    ${row('Revenue',fmtN(d.rev),C.cyan)}
+    ${row('Expenses',fmtN(d.exp),C.orangeDeep)}
+    ${row('Gross profit',fmtN(d.gp),C.orange)}
+    ${row('Margin',d.margin.toFixed(1)+'%',C.lemon)}
+    ${row('Orders',d.orders)}
+    ${row('Avg order',fmtN(d.avg))}`);
+}
+
+/* ---------- chart 2: mix / volume ---------- */
+function drawMix(data,mode){
+  const host=document.getElementById('mix');
+  const W=1120,H=310,ml=54,mr=24,mt=18,mb=48;
+  const iw=W-ml-mr, ih=H-mt-mb;
+  const A=mode==='mix'?'subs':'pieces', B=mode==='mix'?'walk':'units';
+  const LA=mode==='mix'?'Subscriber orders':'Pieces', LB=mode==='mix'?'Walk-in orders':'Billable units';
+  const cA=mode==='mix'?C.cyan:C.cyanLight, cB=mode==='mix'?C.orange:C.lemon;
+  const maxV=Math.max(...data.map(d=>Math.max(d[A],d[B])))*1.15;
+  const step=iw/data.length, bw=Math.min(step*.34,24);
+  const x=i=>ml+step*i+step/2, y=v=>mt+ih-(v/maxV)*ih;
+
+  let g='';
+  for(let i=0;i<=4;i++){
+    const v=maxV*i/4, yy=y(v);
+    g+=`<line class="gl" x1="${ml}" y1="${yy}" x2="${W-mr}" y2="${yy}"/>
+        <text class="ax" x="${ml-9}" y="${yy+3.5}" text-anchor="end">${Math.round(v)}</text>`;
+  }
+
+  const every=data.length>16?2:1;
+  let bars='';
+  data.forEach((d,i)=>{
+    const cx=x(i);
+    bars+=`<g class="bcol" data-i="${i}">
+      <rect class="hit" x="${cx-step/2}" y="${mt}" width="${step}" height="${ih}"/>
+      <rect class="bar" x="${cx-bw}" y="${y(d[A])}" width="${bw*.9}" height="${Math.max(ih-(y(d[A])-mt),1)}" rx="2.5" fill="${cA}"/>
+      <rect class="bar" x="${cx+bw*.1}" y="${y(d[B])}" width="${bw*.9}" height="${Math.max(ih-(y(d[B])-mt),1)}" rx="2.5" fill="${cB}"/>
+    </g>`;
+    if(i%every===0||i===data.length-1)
+      bars+=`<text class="ax" x="${cx}" y="${H-mb+19}" text-anchor="middle">${d.month.replace(' ',"'").replace(/'(\d{2})\d{2}/,"'$1")}</text>`;
+  });
+
+  host.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${LA} against ${LB} by month">
+    ${g}
+    <line class="gl" x1="${ml}" y1="${mt+ih}" x2="${W-mr}" y2="${mt+ih}" stroke="${C.muted}" stroke-opacity=".45"/>
+    ${bars}
+  </svg>
+  <div class="legend" style="margin-top:12px">
+    <span class="lg"><span class="sw" style="background:${cA}"></span>${LA}</span>
+    <span class="lg"><span class="sw" style="background:${cB}"></span>${LB}</span>
+  </div>`;
+
+  const cols=[...host.querySelectorAll('.bcol')].map(el=>({el,d:data[+el.dataset.i]}));
+  attachTip(host,cols,d=>`<h4>${d.month}</h4>
+    ${row(LA,Math.round(d[A]).toLocaleString(),cA)}
+    ${row(LB,Math.round(d[B]).toLocaleString(),cB)}
+    ${row('Total orders',d.orders)}
+    ${row('Revenue',fmtN(d.rev))}`);
+}
+</script>
+</body>
+</html>
