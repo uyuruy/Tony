@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Psalms Laundry — Live Dashboard</title>
+<title>Psalms Laundry and Cleaning Services — Live Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -46,10 +46,13 @@ header{
 }
 .brand h1{
   font-family:Archivo,sans-serif;font-weight:800;
-  font-size:clamp(1.9rem,4.6vw,2.9rem);
-  letter-spacing:-.028em;line-height:1.02;
+  font-size:clamp(1.55rem,3.5vw,2.5rem);
+  letter-spacing:-.03em;line-height:1.06;
+  max-width:15ch;text-wrap:balance;
 }
 .brand h1 span{color:var(--cyan)}
+.brk{display:none}
+@media(max-width:900px){.brk{display:inline}}
 .tag{
   color:var(--muted);font-size:.83rem;margin-top:7px;
   font-family:'IBM Plex Mono',monospace;letter-spacing:.03em;
@@ -231,7 +234,7 @@ footer{
 
   <header>
     <div class="brand">
-      <h1>Psalms <span>Laundry</span></h1>
+      <h1>Psalms <span>Laundry<br class="brk">and Cleaning</span> Services</h1>
       <div class="tag" id="range">Loading trading history…</div>
     </div>
     <div class="live"><span class="dot"></span><span id="stamp">Connecting</span></div>
@@ -242,7 +245,7 @@ footer{
   </div>
 
   <footer>
-    <span>Psalms Laundry Services · Lagos</span>
+    <span>Psalms Laundry and Cleaning Services · Lagos</span>
     <span>Live from Google Sheets · refresh to update</span>
   </footer>
 </div>
@@ -314,7 +317,15 @@ function render(text){
   const rows = parseCSV(text);
   if(rows.length<2){document.getElementById('app').innerHTML='<div class="state"><b>Sheet is empty</b>No rows returned.</div>';return;}
 
-  const head = rows[0];
+  // The published sheet may carry a title row, blank rows, or a leading blank
+  // column. Find the row that actually looks like the header rather than
+  // assuming it is the first one.
+  let hRow = 0;
+  for(let i=0;i<Math.min(rows.length,12);i++){
+    const j = rows[i].map(c=>String(c).toLowerCase());
+    if(j.some(c=>c.trim()==='month') && j.some(c=>c.includes('revenue'))){ hRow=i; break; }
+  }
+  const head = rows[hRow];
   const cMonth = idx(head,'Month');
   const cOrd   = idx(head,'Orders');
   const cPcs   = idx(head,'Pieces');
@@ -327,7 +338,7 @@ function render(text){
   const cMar   = idx(head,'Margin %','Margin');
   const cAvg   = idx(head,'Avg Order (N)','Avg Order');
 
-  const all = rows.slice(1).map(r=>({
+  const all = rows.slice(hRow+1).map(r=>({
     month:(r[cMonth]||'').trim(),
     orders:num(r[cOrd]), pieces:num(r[cPcs]), units:num(r[cUnits]),
     subs:num(r[cSubs]), walk:num(r[cWalk]),
@@ -338,7 +349,21 @@ function render(text){
   const totalRow = all.find(d=>/^total$/i.test(d.month));
   // traded months only: drop TOTAL and the zero-activity future months
   const data = all.filter(d=>!/^total$/i.test(d.month) && d.orders>0);
-  if(!data.length){document.getElementById('app').innerHTML='<div class="state"><b>No trading months found</b>Every row has zero orders.</div>';return;}
+  if(!data.length){
+    const miss=[['Month',cMonth],['Orders',cOrd],['Revenue',cRev]].filter(p=>p[1]<0).map(p=>p[0]);
+    document.getElementById('app').innerHTML=
+      '<div class="state" style="text-align:left;max-width:860px;margin:0 auto">'+
+      '<b>Read the sheet, but found no trading months</b>'+
+      (miss.length?'<p style="color:#FFA94D">Unmatched columns: '+miss.join(', ')+'</p>':'')+
+      '<p style="margin:14px 0 6px">Header row detected at index '+hRow+':</p>'+
+      '<pre style="white-space:pre-wrap;color:#7FDCEC;font-size:.72rem">'+
+        head.map((h,i)=>i+': '+h).join('  |  ')+'</pre>'+
+      '<p style="margin:14px 0 6px">First data rows:</p>'+
+      '<pre style="white-space:pre-wrap;color:#8FA9C4;font-size:.72rem">'+
+        rows.slice(hRow+1,hRow+4).map(r=>r.join(' | ')).join('\n')+'</pre>'+
+      '</div>';
+    return;
+  }
 
   const T = totalRow || {
     orders:data.reduce((s,d)=>s+d.orders,0), pieces:data.reduce((s,d)=>s+d.pieces,0),
