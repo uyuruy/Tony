@@ -103,6 +103,55 @@ header{
 }
 .kpi .sub{font-size:.73rem;color:var(--muted);margin-top:6px}
 
+/* ---------- month strip ---------- */
+.strip{
+  display:flex;gap:6px;overflow-x:auto;padding:0 0 12px;margin-bottom:18px;
+  border-bottom:1px solid var(--line);-webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;scrollbar-color:var(--navy-slate) transparent;
+}
+.strip::-webkit-scrollbar{height:5px}
+.strip::-webkit-scrollbar-thumb{background:var(--navy-slate);border-radius:3px}
+.chip{
+  flex:none;font-family:'IBM Plex Mono',monospace;font-size:.7rem;
+  letter-spacing:.04em;white-space:nowrap;cursor:pointer;
+  background:transparent;color:var(--muted);
+  border:1px solid var(--line);border-radius:7px;padding:7px 12px;
+  transition:color .15s ease,border-color .15s ease,background .15s ease;
+}
+.chip:hover{color:var(--text);border-color:rgba(62,206,240,.45)}
+.chip.on{background:var(--cyan);color:var(--navy-deep);border-color:var(--cyan);font-weight:600}
+.chip:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+/* ---------- month header ---------- */
+.mhead{
+  display:flex;flex-wrap:wrap;gap:14px;
+  align-items:flex-start;justify-content:space-between;margin-bottom:18px;
+}
+.mhead h2{font-family:Archivo,sans-serif;font-weight:800;
+  font-size:clamp(1.4rem,3vw,2rem);letter-spacing:-.025em}
+.mhead p{color:var(--muted);font-size:.79rem;margin-top:5px;max-width:58ch}
+.back{
+  font-family:'IBM Plex Mono',monospace;font-size:.7rem;cursor:pointer;
+  background:transparent;color:var(--cyan);
+  border:1px solid rgba(62,206,240,.35);border-radius:7px;padding:8px 13px;
+  transition:background .15s ease;white-space:nowrap;
+}
+.back:hover{background:rgba(62,206,240,.1)}
+.back:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+/* ---------- delta pills ---------- */
+.delta{
+  font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:.72rem;
+  padding:2px 6px;border-radius:5px;margin-right:6px;display:inline-block;
+}
+.delta.up{color:#7BE3A8;background:rgba(123,227,168,.13)}
+.delta.down{color:#FF9A8B;background:rgba(255,154,139,.13)}
+.delta.flat{color:var(--muted);background:rgba(143,169,196,.13)}
+
+.grid2{display:grid;gap:20px;grid-template-columns:1fr 1fr}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}}
+.crow{cursor:pointer}
+
 /* ---------- panels ---------- */
 .panel{
   background:linear-gradient(158deg,rgba(19,49,92,.62),rgba(11,37,69,.42));
@@ -182,7 +231,7 @@ svg{width:100%;height:auto;display:block;overflow:visible}
 
 /* ---------- table ---------- */
 .tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-table{width:100%;border-collapse:collapse;min-width:760px}
+table{width:100%;border-collapse:collapse;min-width:min(760px,100%)}
 th{
   font-family:'IBM Plex Mono',monospace;font-size:.64rem;
   text-transform:uppercase;letter-spacing:.1em;color:var(--muted);
@@ -234,7 +283,7 @@ footer{
 
   <header>
     <div class="brand">
-      <h1>Psalms <span>Laundry<br class="brk">and Cleaning</span> Services</h1>
+      <h1>Psalms <span>Laundry<br class="brk"> and Cleaning</span> Services</h1>
       <div class="tag" id="range">Loading trading history…</div>
     </div>
     <div class="live"><span class="dot"></span><span id="stamp">Connecting</span></div>
@@ -384,86 +433,228 @@ function render(text){
   const kpi=(lab,val,sub,accent)=>
     `<div class="kpi" style="--accent:${accent}"><div class="lab">${lab}</div><div class="val">${val}</div><div class="sub">${sub}</div></div>`;
 
-  document.getElementById('app').innerHTML = `
-    <div class="kpis">
-      ${kpi('Revenue',fmtN(T.rev),data.length+' months trading',C.cyan)}
-      ${kpi('Gross profit',fmtN(T.gp),tMargin.toFixed(1)+'% margin',C.orange)}
-      ${kpi('Expenses',fmtN(T.exp),(T.rev?(T.exp/T.rev*100).toFixed(1):0)+'% of revenue',C.orangeDeep)}
-      ${kpi('Orders',Math.round(T.orders).toLocaleString(),fmtN(tAvg)+' average',C.cyanLight)}
-      ${kpi('Pieces washed',Math.round(T.pieces).toLocaleString(),Math.round(T.units).toLocaleString()+' billable units',C.lemon)}
-      ${kpi('Best month',best.month,fmtN(best.rev),C.cyanPale)}
-    </div>
+  /* ---------- averages across trading months, for month comparison ---------- */
+  /* Derived from the months actually displayed, not from the TOTAL row divided
+     by N. The TOTAL row covers every row in the sheet, so dividing it would
+     skew every delta whenever a month is excluded. */
+  const N = data.length;
+  const mean = k => data.reduce((s,d)=>s+d[k],0)/N;
+  const AVG = {
+    rev:mean('rev'), exp:mean('exp'), gp:mean('gp'),
+    orders:mean('orders'), pieces:mean('pieces'), units:mean('units'),
+    subs:mean('subs'), walk:mean('walk')
+  };
+  /* margin and average order are ratios: derive them from the summed
+     components, never by averaging the per-month percentages. */
+  AVG.margin = AVG.rev ? AVG.gp/AVG.rev*100 : 0;
+  AVG.avg    = AVG.orders ? AVG.rev/AVG.orders : 0;
 
-    <div class="panel">
-      <div class="phead">
-        <div>
-          <h2>Revenue, cost and profit by month</h2>
-          <p>Each bar is one month. Blue is revenue, orange is what was left after expenses. Hover a month for the full picture.</p>
-        </div>
-        <div class="legend">
-          <span class="lg"><span class="sw" style="background:${C.cyan}"></span>Revenue</span>
-          <span class="lg"><span class="sw" style="background:${C.orange}"></span>Gross profit</span>
-          <span class="lg"><span class="sw" style="background:${C.orangeDeep}"></span>Expenses</span>
-          <span class="lg"><span class="sw" style="background:${C.lemon}"></span>Margin %</span>
-        </div>
-      </div>
-      <div class="chartbox" id="cash"></div>
-    </div>
+  /* delta pill: how this month compares with the 22-month average.
+     invert=true means lower is better (expenses). */
+  function vs(val, avgVal, invert){
+    if(!avgVal) return '<span class="sub">no average</span>';
+    const pct=(val-avgVal)/Math.abs(avgVal)*100;
+    const good = invert ? pct<0 : pct>0;
+    const cls = Math.abs(pct)<2 ? 'flat' : (good?'up':'down');
+    const sign = pct>=0?'+':'−';
+    return `<span class="delta ${cls}">${sign}${Math.abs(pct).toFixed(0)}%</span>
+            <span class="sub" style="display:inline">vs average</span>`;
+  }
 
-    <div class="panel">
-      <div class="phead">
-        <div>
-          <h2>Where the orders come from</h2>
-          <p>Subscriber orders against walk-in orders, month by month.</p>
-        </div>
-        <div class="ctrls">
-          <button class="tgl" data-mix="mix" aria-pressed="true">Subs vs walk-ins</button>
-          <button class="tgl" data-mix="vol" aria-pressed="false">Pieces &amp; units</button>
-        </div>
-      </div>
-      <div class="chartbox" id="mix"></div>
-    </div>
-
-    <div class="panel">
-      <div class="phead">
-        <div><h2>Monthly detail</h2><p>Every trading month, straight from the Summary sheet.</p></div>
-      </div>
-      <div class="tscroll">
-        <table>
-          <thead><tr>
-            <th>Month</th><th>Orders</th><th>Pieces</th><th>Units</th>
-            <th>Subs</th><th>Walk-ins</th><th>Revenue</th><th>Expenses</th>
-            <th>Gross profit</th><th>Margin</th><th>Avg order</th>
-          </tr></thead>
-          <tbody>
-            ${data.map(d=>`<tr>
-              <td>${d.month}</td><td>${d.orders}</td><td>${d.pieces.toLocaleString()}</td>
-              <td>${d.units.toLocaleString()}</td><td>${d.subs}</td><td>${d.walk}</td>
-              <td>${fmtN(d.rev)}</td><td>${fmtN(d.exp)}</td>
-              <td class="pos">${fmtN(d.gp)}</td>
-              <td class="${d.margin<50?'warn':''}">${d.margin.toFixed(1)}%</td>
-              <td>${fmtN(d.avg)}</td></tr>`).join('')}
-            <tr class="tot">
-              <td>Total</td><td>${Math.round(T.orders).toLocaleString()}</td>
-              <td>${Math.round(T.pieces).toLocaleString()}</td><td>${Math.round(T.units).toLocaleString()}</td>
-              <td>${Math.round(T.subs)}</td><td>${Math.round(T.walk)}</td>
-              <td>${fmtN(T.rev)}</td><td>${fmtN(T.exp)}</td><td>${fmtN(T.gp)}</td>
-              <td>${tMargin.toFixed(1)}%</td><td>${fmtN(tAvg)}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+  /* ---------- month strip ---------- */
+  function strip(sel){
+    return `<div class="strip" role="tablist" aria-label="Choose a month">
+      <button class="chip${sel===null?' on':''}" data-m="all" role="tab"
+        aria-selected="${sel===null}">All months</button>
+      ${data.map((d,i)=>`<button class="chip${sel===i?' on':''}" data-m="${i}" role="tab"
+        aria-selected="${sel===i}">${d.month}</button>`).join('')}
     </div>`;
+  }
 
-  drawCash(data);
-  drawMix(data,'mix');
-  document.querySelectorAll('[data-mix]').forEach(b=>{
-    b.addEventListener('click',()=>{
-      document.querySelectorAll('[data-mix]').forEach(x=>x.setAttribute('aria-pressed','false'));
-      b.setAttribute('aria-pressed','true');
-      drawMix(data,b.dataset.mix);
+  /* ---------- overview ---------- */
+  function overview(){
+    document.getElementById('app').innerHTML = strip(null) + `
+      <div class="kpis">
+        ${kpi('Revenue',fmtN(T.rev),data.length+' months trading',C.cyan)}
+        ${kpi('Gross profit',fmtN(T.gp),tMargin.toFixed(1)+'% margin',C.orange)}
+        ${kpi('Expenses',fmtN(T.exp),(T.rev?(T.exp/T.rev*100).toFixed(1):0)+'% of revenue',C.orangeDeep)}
+        ${kpi('Orders',Math.round(T.orders).toLocaleString(),fmtN(tAvg)+' average',C.cyanLight)}
+        ${kpi('Pieces washed',Math.round(T.pieces).toLocaleString(),Math.round(T.units).toLocaleString()+' billable units',C.lemon)}
+        ${kpi('Best month',best.month,fmtN(best.rev),C.cyanPale)}
+      </div>
+
+      <div class="panel">
+        <div class="phead">
+          <div>
+            <h2>Revenue, cost and profit by month</h2>
+            <p>Each bar is one month. Blue is revenue, orange is what was left after expenses. Click a bar to open that month.</p>
+          </div>
+          <div class="legend">
+            <span class="lg"><span class="sw" style="background:${C.cyan}"></span>Revenue</span>
+            <span class="lg"><span class="sw" style="background:${C.orange}"></span>Gross profit</span>
+            <span class="lg"><span class="sw" style="background:${C.orangeDeep}"></span>Expenses</span>
+            <span class="lg"><span class="sw" style="background:${C.lemon}"></span>Margin %</span>
+          </div>
+        </div>
+        <div class="chartbox" id="cash"></div>
+      </div>
+
+      <div class="panel">
+        <div class="phead">
+          <div>
+            <h2>Where the orders come from</h2>
+            <p>Subscriber orders against walk-in orders, month by month.</p>
+          </div>
+          <div class="ctrls">
+            <button class="tgl" data-mix="mix" aria-pressed="true">Subs vs walk-ins</button>
+            <button class="tgl" data-mix="vol" aria-pressed="false">Pieces &amp; units</button>
+          </div>
+        </div>
+        <div class="chartbox" id="mix"></div>
+      </div>
+
+      <div class="panel">
+        <div class="phead">
+          <div><h2>Monthly detail</h2><p>Every trading month. Click a row to open it.</p></div>
+        </div>
+        <div class="tscroll">
+          <table>
+            <thead><tr>
+              <th>Month</th><th>Orders</th><th>Pieces</th><th>Units</th>
+              <th>Subs</th><th>Walk-ins</th><th>Revenue</th><th>Expenses</th>
+              <th>Gross profit</th><th>Margin</th><th>Avg order</th>
+            </tr></thead>
+            <tbody>
+              ${data.map((d,i)=>`<tr class="crow" data-m="${i}">
+                <td>${d.month}</td><td>${d.orders}</td><td>${d.pieces.toLocaleString()}</td>
+                <td>${d.units.toLocaleString()}</td><td>${d.subs}</td><td>${d.walk}</td>
+                <td>${fmtN(d.rev)}</td><td>${fmtN(d.exp)}</td>
+                <td class="pos">${fmtN(d.gp)}</td>
+                <td class="${d.margin<50?'warn':''}">${d.margin.toFixed(1)}%</td>
+                <td>${fmtN(d.avg)}</td></tr>`).join('')}
+              <tr class="tot">
+                <td>Total</td><td>${Math.round(T.orders).toLocaleString()}</td>
+                <td>${Math.round(T.pieces).toLocaleString()}</td><td>${Math.round(T.units).toLocaleString()}</td>
+                <td>${Math.round(T.subs)}</td><td>${Math.round(T.walk)}</td>
+                <td>${fmtN(T.rev)}</td><td>${fmtN(T.exp)}</td><td>${fmtN(T.gp)}</td>
+                <td>${tMargin.toFixed(1)}%</td><td>${fmtN(tAvg)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+
+    drawCash(data, i=>show(i));
+    drawMix(data,'mix');
+    document.querySelectorAll('[data-mix]').forEach(b=>{
+      b.addEventListener('click',()=>{
+        document.querySelectorAll('[data-mix]').forEach(x=>x.setAttribute('aria-pressed','false'));
+        b.setAttribute('aria-pressed','true');
+        drawMix(data,b.dataset.mix);
+      });
     });
-  });
+    document.querySelectorAll('.crow').forEach(r=>
+      r.addEventListener('click',()=>show(+r.dataset.m)));
+    wireStrip();
+  }
+
+  /* ---------- single month ---------- */
+  function monthView(i){
+    const d=data[i], prev=i>0?data[i-1]:null;
+    const share = d.orders? (d.subs/d.orders*100) : 0;
+    const avgShare = AVG.orders? (AVG.subs/AVG.orders*100) : 0;
+    const rank = [...data].sort((a,b)=>b.rev-a.rev).findIndex(x=>x.month===d.month)+1;
+
+    document.getElementById('app').innerHTML = strip(i) + `
+      <div class="mhead">
+        <div>
+          <h2>${d.month}</h2>
+          <p>Ranked ${rank} of ${N} months by revenue. Every figure below is compared with your ${N}-month average.</p>
+        </div>
+        <button class="back" data-m="all">← All months</button>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi" style="--accent:${C.cyan}"><div class="lab">Revenue</div>
+          <div class="val">${fmtN(d.rev)}</div><div class="sub">${vs(d.rev,AVG.rev)}</div></div>
+        <div class="kpi" style="--accent:${C.orange}"><div class="lab">Gross profit</div>
+          <div class="val">${fmtN(d.gp)}</div><div class="sub">${vs(d.gp,AVG.gp)}</div></div>
+        <div class="kpi" style="--accent:${C.orangeDeep}"><div class="lab">Expenses</div>
+          <div class="val">${fmtN(d.exp)}</div><div class="sub">${vs(d.exp,AVG.exp,true)}</div></div>
+        <div class="kpi" style="--accent:${C.lemon}"><div class="lab">Margin</div>
+          <div class="val">${d.margin.toFixed(1)}%</div>
+          <div class="sub">${vs(d.margin,AVG.margin)}</div></div>
+        <div class="kpi" style="--accent:${C.cyanLight}"><div class="lab">Orders</div>
+          <div class="val">${d.orders}</div><div class="sub">${vs(d.orders,AVG.orders)}</div></div>
+        <div class="kpi" style="--accent:${C.cyanPale}"><div class="lab">Average order</div>
+          <div class="val">${fmtN(d.avg)}</div><div class="sub">${vs(d.avg,AVG.avg)}</div></div>
+      </div>
+
+      <div class="grid2">
+        <div class="panel">
+          <div class="phead"><div>
+            <h2>Money in, money out</h2>
+            <p>${d.month} against your ${N}-month average.</p>
+          </div></div>
+          <div class="chartbox" id="mbars"></div>
+        </div>
+
+        <div class="panel">
+          <div class="phead"><div>
+            <h2>Who ordered</h2>
+            <p>${Math.round(share)}% of orders came from subscribers, against ${Math.round(avgShare)}% on average.</p>
+          </div></div>
+          <div class="chartbox" id="mdonut"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="phead"><div><h2>The full month</h2>
+          <p>Every figure the Summary sheet holds for ${d.month}.</p></div></div>
+        <div class="tscroll">
+          <table>
+            <thead><tr><th>Measure</th><th>${d.month}</th><th>${N}-month average</th>
+              <th>Difference</th>${prev?`<th>${prev.month}</th>`:''}</tr></thead>
+            <tbody>
+              ${[
+                ['Revenue',d.rev,AVG.rev,prev&&prev.rev,fmtN],
+                ['Expenses',d.exp,AVG.exp,prev&&prev.exp,fmtN],
+                ['Gross profit',d.gp,AVG.gp,prev&&prev.gp,fmtN],
+                ['Margin %',d.margin,AVG.margin,prev&&prev.margin,v=>v.toFixed(1)+'%'],
+                ['Orders',d.orders,AVG.orders,prev&&prev.orders,v=>Math.round(v)],
+                ['Subscriber orders',d.subs,AVG.subs,prev&&prev.subs,v=>Math.round(v)],
+                ['Walk-in orders',d.walk,AVG.walk,prev&&prev.walk,v=>Math.round(v)],
+                ['Pieces',d.pieces,AVG.pieces,prev&&prev.pieces,v=>Math.round(v).toLocaleString()],
+                ['Billable units',d.units,AVG.units,prev&&prev.units,v=>Math.round(v).toLocaleString()],
+                ['Average order',d.avg,AVG.avg,prev&&prev.avg,fmtN]
+              ].map(([lab,v,a,p,f])=>{
+                const diff=v-a, sign=diff>=0?'+':'−';
+                return `<tr><td>${lab}</td><td>${f(v)}</td><td>${f(a)}</td>
+                  <td class="${diff>=0?'pos':'warn'}">${sign}${f(Math.abs(diff))}</td>
+                  ${prev?`<td>${f(p)}</td>`:''}</tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+
+    drawMonthBars(d,AVG);
+    drawDonut(d);
+    wireStrip();
+  }
+
+  function wireStrip(){
+    document.querySelectorAll('[data-m]').forEach(b=>{
+      if(b.classList.contains('crow')) return;
+      b.addEventListener('click',()=>show(b.dataset.m==='all'?null:+b.dataset.m));
+    });
+  }
+  function show(i){
+    if(i===null) overview(); else monthView(i);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  overview();
 }
 
 /* ---------- tooltip helper ---------- */
@@ -492,7 +683,7 @@ function attachTip(host, colEls, builder){
 const row=(l,v,c)=>`<div class="r"><span>${l}</span><b${c?` style="color:${c}"`:''}>${v}</b></div>`;
 
 /* ---------- chart 1: revenue / profit / expenses / margin ---------- */
-function drawCash(data){
+function drawCash(data,onPick){
   const host=document.getElementById('cash');
   const W=1120,H=430,ml=64,mr=48,mt=22,mb=54;
   const iw=W-ml-mr, ih=H-mt-mb;
@@ -539,13 +730,81 @@ function drawCash(data){
   </svg>`;
 
   const cols2=[...host.querySelectorAll('.bcol')].map(el=>({el,d:data[+el.dataset.i]}));
+  if(onPick) cols2.forEach(({el})=>el.addEventListener('click',()=>onPick(+el.dataset.i)));
   attachTip(host,cols2,d=>`<h4>${d.month}</h4>
     ${row('Revenue',fmtN(d.rev),C.cyan)}
     ${row('Expenses',fmtN(d.exp),C.orangeDeep)}
     ${row('Gross profit',fmtN(d.gp),C.orange)}
     ${row('Margin',d.margin.toFixed(1)+'%',C.lemon)}
     ${row('Orders',d.orders)}
-    ${row('Avg order',fmtN(d.avg))}`);
+    ${row('Avg order',fmtN(d.avg))}
+    <div class="r" style="margin-top:7px;opacity:.6"><span>Click to open</span></div>`);
+}
+
+/* ---------- month view: this month against the average ---------- */
+function drawMonthBars(d,AVG){
+  const host=document.getElementById('mbars');
+  const W=520,H=280,ml=76,mr=20,mt=16,mb=44;
+  const iw=W-ml-mr, ih=H-mt-mb;
+  const series=[
+    {lab:'Revenue', now:d.rev, avg:AVG.rev, c:C.cyan},
+    {lab:'Expenses',now:d.exp, avg:AVG.exp, c:C.orangeDeep},
+    {lab:'Profit',  now:d.gp,  avg:AVG.gp,  c:C.orange}
+  ];
+  const maxV=Math.max(...series.map(s=>Math.max(s.now,s.avg)))*1.15||1;
+  const band=iw/series.length, bw=Math.min(band*.3,40);
+  const y=v=>mt+ih-(v/maxV)*ih;
+
+  let g='';
+  for(let i=0;i<=4;i++){
+    const v=maxV*i/4, yy=y(v);
+    g+=`<line class="gl" x1="${ml}" y1="${yy}" x2="${W-mr}" y2="${yy}"/>
+        <text class="ax" x="${ml-9}" y="${yy+3.5}" text-anchor="end">${fmtK(v)}</text>`;
+  }
+  let bars='';
+  series.forEach((s,i)=>{
+    const cx=ml+band*i+band/2;
+    bars+=`<rect x="${cx-bw-3}" y="${y(s.now)}" width="${bw}" height="${Math.max(ih-(y(s.now)-mt),1)}" rx="3" fill="${s.c}"/>
+      <rect x="${cx+3}" y="${y(s.avg)}" width="${bw}" height="${Math.max(ih-(y(s.avg)-mt),1)}" rx="3"
+        fill="${s.c}" opacity=".26" stroke="${s.c}" stroke-opacity=".5" stroke-dasharray="3 2"/>
+      <text class="ax" x="${cx}" y="${H-mb+19}" text-anchor="middle">${s.lab}</text>`;
+  });
+  host.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img"
+      aria-label="This month against the average for revenue, expenses and profit">${g}
+    <line class="gl" x1="${ml}" y1="${mt+ih}" x2="${W-mr}" y2="${mt+ih}" stroke="${C.muted}" stroke-opacity=".45"/>
+    ${bars}</svg>
+    <div class="legend" style="margin-top:12px">
+      <span class="lg"><span class="sw" style="background:${C.cyan}"></span>This month</span>
+      <span class="lg"><span class="sw" style="background:${C.cyan};opacity:.3"></span>Average month</span>
+    </div>`;
+}
+
+/* ---------- month view: subscriber vs walk-in split ---------- */
+function drawDonut(d){
+  const host=document.getElementById('mdonut');
+  const W=520,H=280,cx=W/2,cy=H/2-6,R=88,r=54;
+  const tot=d.subs+d.walk;
+  if(!tot){host.innerHTML='<div class="state">No orders recorded this month.</div>';return;}
+  const parts=[{lab:'Subscriber',v:d.subs,c:C.cyan},{lab:'Walk-in',v:d.walk,c:C.orange}];
+  let a0=-Math.PI/2, segs='';
+  parts.forEach(p=>{
+    if(!p.v) return;
+    const a1=a0+(p.v/tot)*Math.PI*2, big=(a1-a0)>Math.PI?1:0;
+    const P=(ang,rad)=>[cx+Math.cos(ang)*rad,cy+Math.sin(ang)*rad];
+    const [x1,y1]=P(a0,R),[x2,y2]=P(a1,R),[x3,y3]=P(a1,r),[x4,y4]=P(a0,r);
+    segs+=`<path d="M${x1} ${y1} A${R} ${R} 0 ${big} 1 ${x2} ${y2} L${x3} ${y3} A${r} ${r} 0 ${big} 0 ${x4} ${y4} Z"
+      fill="${p.c}" stroke="#0B2545" stroke-width="2"/>`;
+    a0=a1;
+  });
+  host.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img"
+      aria-label="Subscriber against walk-in orders this month">${segs}
+    <text x="${cx}" y="${cy-4}" text-anchor="middle" fill="${C.text||'#F4F8FB'}"
+      style="font-family:Archivo,sans-serif;font-weight:800;font-size:30px">${tot}</text>
+    <text x="${cx}" y="${cy+18}" text-anchor="middle" class="ax">orders</text></svg>
+    <div class="legend" style="margin-top:10px;justify-content:center">
+      ${parts.map(p=>`<span class="lg"><span class="sw" style="background:${p.c}"></span>
+        ${p.lab} · ${p.v} (${Math.round(p.v/tot*100)}%)</span>`).join('')}
+    </div>`;
 }
 
 /* ---------- chart 2: mix / volume ---------- */
