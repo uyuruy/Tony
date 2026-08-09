@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Laundry OS — Sample Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-deep:#0B2545;
+  --navy-mid:#13315C;
+  --navy-slate:#1F4E79;
+  --cyan:#3ECEF0;
+  --cyan-light:#7FDCEC;
+  --cyan-pale:#CFEFF7;
+  --orange:#FFA94D;
+  --orange-deep:#F07C1E;
+  --lemon:#FFD23F;
+  --text:#F4F8FB;
+  --muted:#8FA9C4;
+  --line:rgba(143,169,196,.20);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:
+    radial-gradient(1100px 620px at 78% -8%, rgba(62,206,240,.13), transparent 62%),
+    radial-gradient(820px 520px at 4% 104%, rgba(255,169,77,.10), transparent 58%),
+    var(--navy-deep);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,sans-serif;
+  min-height:100vh;
+  padding:28px 22px 64px;
+  line-height:1.5;
+}
+.wrap{max-width:1240px;margin:0 auto}
+
+/* ---------- header ---------- */
+header{
+  display:flex;flex-wrap:wrap;gap:18px;
+  align-items:flex-end;justify-content:space-between;
+  padding-bottom:22px;margin-bottom:26px;
+  border-bottom:1px solid var(--line);
+}
+.brand h1{
+  font-family:Archivo,sans-serif;font-weight:800;
+  font-size:clamp(1.55rem,3.5vw,2.5rem);
+  letter-spacing:-.03em;line-height:1.06;
+  max-width:15ch;text-wrap:balance;
+}
+.brand h1 span{color:var(--cyan)}
+.brk{display:none}
+@media(max-width:900px){.brk{display:inline}}
+.tag{
+  color:var(--muted);font-size:.83rem;margin-top:7px;
+  font-family:'IBM Plex Mono',monospace;letter-spacing:.03em;
+}
+.live{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:'IBM Plex Mono',monospace;font-size:.7rem;
+  text-transform:uppercase;letter-spacing:.13em;
+  color:var(--cyan-pale);
+  background:rgba(62,206,240,.09);
+  border:1px solid rgba(62,206,240,.28);
+  padding:7px 13px;border-radius:999px;white-space:nowrap;
+}
+.dot{
+  width:6px;height:6px;border-radius:50%;background:var(--cyan);
+  box-shadow:0 0 0 0 rgba(62,206,240,.65);
+  animation:pulse 2.4s infinite;
+}
+@keyframes pulse{
+  70%{box-shadow:0 0 0 9px rgba(62,206,240,0)}
+  100%{box-shadow:0 0 0 0 rgba(62,206,240,0)}
+}
+
+/* ---------- KPI ribbon ---------- */
+.kpis{
+  display:grid;gap:13px;margin-bottom:26px;
+  grid-template-columns:repeat(auto-fit,minmax(178px,1fr));
+}
+.kpi{
+  background:linear-gradient(158deg,rgba(19,49,92,.92),rgba(11,37,69,.72));
+  border:1px solid var(--line);border-radius:13px;
+  padding:17px 17px 15px;position:relative;overflow:hidden;
+}
+.kpi::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--accent,var(--cyan));
+}
+.kpi .lab{
+  font-family:'IBM Plex Mono',monospace;font-size:.64rem;
+  text-transform:uppercase;letter-spacing:.13em;color:var(--muted);
+  margin-bottom:9px;
+}
+.kpi .val{
+  font-family:Archivo,sans-serif;font-weight:700;
+  font-size:clamp(1.28rem,2.5vw,1.72rem);
+  letter-spacing:-.022em;line-height:1.06;
+  font-variant-numeric:tabular-nums;
+}
+.kpi .sub{font-size:.73rem;color:var(--muted);margin-top:6px}
+
+/* ---------- month strip ---------- */
+.strip{
+  display:flex;gap:6px;overflow-x:auto;padding:0 0 12px;margin-bottom:18px;
+  border-bottom:1px solid var(--line);-webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;scrollbar-color:var(--navy-slate) transparent;
+}
+.strip::-webkit-scrollbar{height:5px}
+.strip::-webkit-scrollbar-thumb{background:var(--navy-slate);border-radius:3px}
+.chip{
+  flex:none;font-family:'IBM Plex Mono',monospace;font-size:.7rem;
+  letter-spacing:.04em;white-space:nowrap;cursor:pointer;
+  background:transparent;color:var(--muted);
+  border:1px solid var(--line);border-radius:7px;padding:7px 12px;
+  transition:color .15s ease,border-color .15s ease,background .15s ease;
+}
+.chip:hover{color:var(--text);border-color:rgba(62,206,240,.45)}
+.chip.on{background:var(--cyan);color:var(--navy-deep);border-color:var(--cyan);font-weight:600}
+.chip:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+/* ---------- month header ---------- */
+.mhead{
+  display:flex;flex-wrap:wrap;gap:14px;
+  align-items:flex-start;justify-content:space-between;margin-bottom:18px;
+}
+.mhead h2{font-family:Archivo,sans-serif;font-weight:800;
+  font-size:clamp(1.4rem,3vw,2rem);letter-spacing:-.025em}
+.mhead p{color:var(--muted);font-size:.79rem;margin-top:5px;max-width:58ch}
+.back{
+  font-family:'IBM Plex Mono',monospace;font-size:.7rem;cursor:pointer;
+  background:transparent;color:var(--cyan);
+  border:1px solid rgba(62,206,240,.35);border-radius:7px;padding:8px 13px;
+  transition:background .15s ease;white-space:nowrap;
+}
+.back:hover{background:rgba(62,206,240,.1)}
+.back:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+/* ---------- delta pills ---------- */
+.delta{
+  font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:.72rem;
+  padding:2px 6px;border-radius:5px;margin-right:6px;display:inline-block;
+}
+.delta.up{color:#7BE3A8;background:rgba(123,227,168,.13)}
+.delta.down{color:#FF9A8B;background:rgba(255,154,139,.13)}
+.delta.flat{color:var(--muted);background:rgba(143,169,196,.13)}
+
+.grid2{display:grid;gap:20px;grid-template-columns:1fr 1fr}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}}
+.crow{cursor:pointer}
+
+/* ---------- panels ---------- */
+.panel{
+  background:linear-gradient(158deg,rgba(19,49,92,.62),rgba(11,37,69,.42));
+  border:1px solid var(--line);border-radius:15px;
+  padding:20px;margin-bottom:20px;
+}
+.phead{
+  display:flex;flex-wrap:wrap;gap:12px;
+  align-items:baseline;justify-content:space-between;margin-bottom:16px;
+}
+.phead h2{
+  font-family:Archivo,sans-serif;font-weight:700;font-size:1.02rem;
+  letter-spacing:-.012em;
+}
+.phead p{font-size:.77rem;color:var(--muted);max-width:52ch}
+
+.legend{display:flex;flex-wrap:wrap;gap:15px}
+.lg{
+  display:flex;align-items:center;gap:6px;
+  font-family:'IBM Plex Mono',monospace;font-size:.68rem;
+  color:var(--muted);letter-spacing:.04em;
+}
+.sw{width:11px;height:11px;border-radius:3px;flex:none}
+
+/* ---------- chart ---------- */
+.chartbox{position:relative;width:100%;overflow:hidden}
+svg{width:100%;height:auto;display:block;overflow:visible}
+.gl{stroke:var(--line);stroke-width:1}
+.ax{
+  font-family:'IBM Plex Mono',monospace;font-size:9.5px;
+  fill:var(--muted);letter-spacing:.02em;
+}
+.bar{transition:opacity .16s ease}
+.chartbox:hover .bar{opacity:.42}
+.chartbox .bcol:hover .bar{opacity:1}
+.hit{fill:transparent;cursor:pointer}
+.bcol:hover .hit{fill:rgba(62,206,240,.07)}
+
+.tip{
+  position:absolute;pointer-events:none;opacity:0;
+  transition:opacity .13s ease;z-index:20;
+  background:rgba(6,24,45,.97);
+  border:1px solid rgba(62,206,240,.34);
+  border-radius:9px;padding:10px 12px;min-width:172px;
+  box-shadow:0 12px 32px rgba(0,0,0,.5);
+}
+.tip.on{opacity:1}
+.tip h4{
+  font-family:Archivo,sans-serif;font-size:.79rem;font-weight:700;
+  margin-bottom:8px;padding-bottom:7px;
+  border-bottom:1px solid var(--line);
+}
+.tip .r{
+  display:flex;justify-content:space-between;gap:16px;
+  font-size:.71rem;margin-top:4px;
+  font-family:'IBM Plex Mono',monospace;
+  font-variant-numeric:tabular-nums;
+}
+.tip .r span:first-child{color:var(--muted)}
+.tip .r b{font-weight:600}
+
+/* ---------- controls ---------- */
+.ctrls{display:flex;flex-wrap:wrap;gap:7px}
+.tgl{
+  font-family:'IBM Plex Mono',monospace;font-size:.68rem;
+  text-transform:uppercase;letter-spacing:.09em;
+  background:transparent;color:var(--muted);
+  border:1px solid var(--line);border-radius:7px;
+  padding:6px 11px;cursor:pointer;transition:all .15s ease;
+}
+.tgl:hover{color:var(--text);border-color:rgba(62,206,240,.4)}
+.tgl[aria-pressed="true"]{
+  color:var(--navy-deep);background:var(--cyan);
+  border-color:var(--cyan);font-weight:600;
+}
+.tgl:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+
+/* ---------- table ---------- */
+.tscroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:min(760px,100%)}
+th{
+  font-family:'IBM Plex Mono',monospace;font-size:.64rem;
+  text-transform:uppercase;letter-spacing:.1em;color:var(--muted);
+  text-align:right;padding:9px 11px;
+  border-bottom:1px solid var(--line);white-space:nowrap;
+  position:sticky;top:0;background:#0d2949;
+}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:#0d2949}
+th:first-child{z-index:2}
+td{
+  padding:9px 11px;text-align:right;font-size:.79rem;
+  border-bottom:1px solid rgba(143,169,196,.09);
+  font-variant-numeric:tabular-nums;
+  font-family:'IBM Plex Mono',monospace;
+}
+tbody tr:hover td{background:rgba(62,206,240,.055)}
+tbody tr:hover td:first-child{background:#12365f}
+tr.tot td{
+  border-top:2px solid var(--cyan);border-bottom:none;
+  font-weight:600;color:var(--cyan-pale);padding-top:12px;
+}
+.pos{color:var(--orange)}
+.warn{color:var(--lemon)}
+
+/* ---------- states ---------- */
+.state{
+  padding:42px 20px;text-align:center;color:var(--muted);
+  font-family:'IBM Plex Mono',monospace;font-size:.83rem;
+}
+.state b{display:block;color:var(--text);margin-bottom:7px;font-size:.92rem}
+.state a{color:var(--cyan)}
+footer{
+  margin-top:26px;padding-top:18px;border-top:1px solid var(--line);
+  color:var(--muted);font-size:.72rem;
+  font-family:'IBM Plex Mono',monospace;
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
+}
+@media(max-width:640px){
+  body{padding:20px 14px 46px}
+  .panel{padding:15px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <h1>Laundry <span>OS</span></h1>
+      <div class="tag" id="range">Loading trading history…</div>
+    </div>
+    <div class="live"><span class="dot"></span><span id="stamp">Connecting</span></div>
+  </header>
+
+  <div style="background:rgba(255,169,77,.10);border:1px solid rgba(255,169,77,.35);border-radius:10px;padding:12px 15px;margin-bottom:20px;font-size:.79rem;color:#FFA94D;font-family:'IBM Plex Mono',monospace">Sample dashboard. The figures below are illustrative and do not represent any real business. A live deployment reads your own Google Sheet and updates on its own.</div>
+  <div id="app">
+    <div class="state"><b>Loading live data</b>Reading the published Summary sheet.</div>
+  </div>
+
+  <footer>
+    <span>Sample dashboard · figures are illustrative, not a real business</span>
+    <span>The live version reads directly from your Google Sheet</span>
+  </footer>
+</div>
+
+<script>
+
+const C = {cyan:'#3ECEF0',cyanLight:'#7FDCEC',cyanPale:'#CFEFF7',orange:'#FFA94D',
+           orangeDeep:'#F07C1E',lemon:'#FFD23F',muted:'#8FA9C4'};
+
+/* ---------- CSV parsing (quote-aware) ---------- */
+function parseCSV(t){
+  const rows=[];let row=[],cell='',q=false;
+  t=t.replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  for(let i=0;i<t.length;i++){
+    const c=t[i];
+    if(q){
+      if(c==='"'){ if(t[i+1]==='"'){cell+='"';i++;} else q=false; }
+      else cell+=c;
+    }else{
+      if(c==='"')q=true;
+      else if(c===','){row.push(cell);cell='';}
+      else if(c==='\n'){row.push(cell);rows.push(row);row=[];cell='';}
+      else cell+=c;
+    }
+  }
+  if(cell!==''||row.length){row.push(cell);rows.push(row);}
+  return rows.filter(r=>r.some(x=>x.trim()!==''));
+}
+/* strips currency, commas, %, spaces, NBSP */
+const num = v => {
+  if(v==null) return 0;
+  const s=String(v).replace(/[₦N,%\s\u00A0]/g,'').trim();
+  if(s===''||s==='-') return 0;
+  const n=parseFloat(s);
+  return isNaN(n)?0:n;
+};
+const fmtN = n => '₦'+Math.round(n).toLocaleString('en-NG');
+const fmtK = n => n>=1e6 ? '₦'+(n/1e6).toFixed(n>=1e7?0:1)+'M'
+                : n>=1e3 ? '₦'+Math.round(n/1e3)+'k' : '₦'+Math.round(n);
+
+/* find a column by fuzzy name match — survives reordering/renaming */
+function idx(head, ...keys){
+  const norm = s => String(s).toLowerCase().replace(/[^a-z%]/g,'');
+  const H = head.map(norm);
+  for(const k of keys){
+    const nk = norm(k);
+    let i = H.indexOf(nk);
+    if(i>=0) return i;
+    i = H.findIndex(h=>h.startsWith(nk)&&nk.length>2);
+    if(i>=0) return i;
+  }
+  return -1;
+}
+
+/* ---------- load ---------- */
+const DEMO_DATA = [{"month":"Sep 2024","orders":79,"pieces":818,"units":1030,"subs":39,"walk":40,"rev":1186800.0,"exp":559600.0,"gp":627200.0,"margin":52.85,"avg":15023},{"month":"Oct 2024","orders":101,"pieces":954,"units":1201,"subs":53,"walk":48,"rev":1204200.0,"exp":658500.0,"gp":545700.0,"margin":45.32,"avg":11923},{"month":"Nov 2024","orders":110,"pieces":1232,"units":1531,"subs":57,"walk":53,"rev":1540700.0,"exp":723400.0,"gp":817300.0,"margin":53.05,"avg":14006},{"month":"Dec 2024","orders":109,"pieces":1125,"units":1444,"subs":63,"walk":46,"rev":1436900.0,"exp":692700.0,"gp":744200.0,"margin":51.79,"avg":13183},{"month":"Jan 2025","orders":89,"pieces":943,"units":1125,"subs":44,"walk":45,"rev":1218600.0,"exp":567600.0,"gp":651000.0,"margin":53.42,"avg":13692},{"month":"Feb 2025","orders":84,"pieces":911,"units":1140,"subs":46,"walk":38,"rev":1228900.0,"exp":639400.0,"gp":589500.0,"margin":47.97,"avg":14630},{"month":"Mar 2025","orders":119,"pieces":1147,"units":1483,"subs":72,"walk":47,"rev":1419300.0,"exp":742700.0,"gp":676600.0,"margin":47.67,"avg":11927},{"month":"Apr 2025","orders":116,"pieces":1211,"units":1468,"subs":60,"walk":56,"rev":1375700.0,"exp":647800.0,"gp":727900.0,"margin":52.91,"avg":11859},{"month":"May 2025","orders":103,"pieces":1239,"units":1493,"subs":52,"walk":51,"rev":1466700.0,"exp":795300.0,"gp":671400.0,"margin":45.78,"avg":14240},{"month":"Jun 2025","orders":103,"pieces":1068,"units":1247,"subs":50,"walk":53,"rev":1593900.0,"exp":825800.0,"gp":768100.0,"margin":48.19,"avg":15475},{"month":"Jul 2025","orders":96,"pieces":947,"units":1113,"subs":46,"walk":50,"rev":1457100.0,"exp":788100.0,"gp":669000.0,"margin":45.91,"avg":15178},{"month":"Aug 2025","orders":115,"pieces":1069,"units":1406,"subs":66,"walk":49,"rev":1669700.0,"exp":892200.0,"gp":777500.0,"margin":46.57,"avg":14519},{"month":"Sep 2025","orders":107,"pieces":917,"units":1180,"subs":58,"walk":49,"rev":1643800.0,"exp":880900.0,"gp":762900.0,"margin":46.41,"avg":15363},{"month":"Oct 2025","orders":141,"pieces":1415,"units":1832,"subs":69,"walk":72,"rev":1645400.0,"exp":753100.0,"gp":892300.0,"margin":54.23,"avg":11670},{"month":"Nov 2025","orders":160,"pieces":1805,"units":2314,"subs":93,"walk":67,"rev":1871600.0,"exp":841900.0,"gp":1029700.0,"margin":55.02,"avg":11698},{"month":"Dec 2025","orders":163,"pieces":1979,"units":2367,"subs":83,"walk":80,"rev":2037500.0,"exp":1090400.0,"gp":947100.0,"margin":46.48,"avg":12500},{"month":"Jan 2026","orders":116,"pieces":1335,"units":1593,"subs":59,"walk":57,"rev":1611900.0,"exp":846700.0,"gp":765200.0,"margin":47.47,"avg":13896},{"month":"Feb 2026","orders":121,"pieces":1216,"units":1470,"subs":72,"walk":49,"rev":1535200.0,"exp":719500.0,"gp":815700.0,"margin":53.13,"avg":12688},{"month":"Mar 2026","orders":135,"pieces":1470,"units":1840,"subs":81,"walk":54,"rev":1824100.0,"exp":867200.0,"gp":956900.0,"margin":52.46,"avg":13512},{"month":"Apr 2026","orders":134,"pieces":1592,"units":2009,"subs":75,"walk":59,"rev":1796400.0,"exp":846700.0,"gp":949700.0,"margin":52.87,"avg":13406},{"month":"May 2026","orders":151,"pieces":1535,"units":1802,"subs":74,"walk":77,"rev":2012600.0,"exp":1085400.0,"gp":927200.0,"margin":46.07,"avg":13328},{"month":"Jun 2026","orders":132,"pieces":1209,"units":1468,"subs":64,"walk":68,"rev":1871900.0,"exp":950500.0,"gp":921400.0,"margin":49.22,"avg":14181},{"month":"Jul 2026","orders":122,"pieces":1151,"units":1494,"subs":65,"walk":57,"rev":1878300.0,"exp":931400.0,"gp":946900.0,"margin":50.41,"avg":15396}];
+const DEMO_TOTAL = {"orders":2706,"pieces":28288,"units":35050,"subs":1441,"walk":1265,"rev":36527200.0,"exp":18346800.0,"gp":18180400.0};
+
+/* Sample dashboard: illustrative data is embedded so the page renders standalone.
+   A live deployment reads a published Google Sheet CSV instead. */
+render();
+
+function render(){
+  const data = DEMO_DATA;
+  const T = DEMO_TOTAL;
+  const tMargin = T.rev ? T.gp/T.rev*100 : 0;
+  const tAvg    = T.orders ? T.rev/T.orders : 0;
+  const last    = data[data.length-1];
+  const best    = data.reduce((a,b)=>b.rev>a.rev?b:a);
+
+  document.getElementById('range').textContent =
+    data[0].month+' — '+last.month+' · '+data.length+' months of sample data';
+  document.getElementById('stamp').textContent = 'Sample data';
+
+  const kpi=(lab,val,sub,accent)=>
+    `<div class="kpi" style="--accent:${accent}"><div class="lab">${lab}</div><div class="val">${val}</div><div class="sub">${sub}</div></div>`;
+
+  /* ---------- averages across trading months, for month comparison ---------- */
+  /* Derived from the months actually displayed, not from the TOTAL row divided
+     by N. The TOTAL row covers every row in the sheet, so dividing it would
+     skew every delta whenever a month is excluded. */
+  const N = data.length;
+  const mean = k => data.reduce((s,d)=>s+d[k],0)/N;
+  const AVG = {
+    rev:mean('rev'), exp:mean('exp'), gp:mean('gp'),
+    orders:mean('orders'), pieces:mean('pieces'), units:mean('units'),
+    subs:mean('subs'), walk:mean('walk')
+  };
+  /* margin and average order are ratios: derive them from the summed
+     components, never by averaging the per-month percentages. */
+  AVG.margin = AVG.rev ? AVG.gp/AVG.rev*100 : 0;
+  AVG.avg    = AVG.orders ? AVG.rev/AVG.orders : 0;
+
+  /* delta pill: how this month compares with the 22-month average.
+     invert=true means lower is better (expenses). */
+  function vs(val, avgVal, invert){
+    if(!avgVal) return '<span class="sub">no average</span>';
+    const pct=(val-avgVal)/Math.abs(avgVal)*100;
+    const good = invert ? pct<0 : pct>0;
+    const cls = Math.abs(pct)<2 ? 'flat' : (good?'up':'down');
+    const sign = pct>=0?'+':'−';
+    return `<span class="delta ${cls}">${sign}${Math.abs(pct).toFixed(0)}%</span>
+            <span class="sub" style="display:inline">vs average</span>`;
+  }
+
+  /* ---------- month strip ---------- */
+  function strip(sel){
+    return `<div class="strip" role="tablist" aria-label="Choose a month">
+      <button class="chip${sel===null?' on':''}" data-m="all" role="tab"
+        aria-selected="${sel===null}">All months</button>
+      ${data.map((d,i)=>`<button class="chip${sel===i?' on':''}" data-m="${i}" role="tab"
+        aria-selected="${sel===i}">${d.month}</button>`).join('')}
+    </div>`;
+  }
+
+  /* ---------- overview ---------- */
+  function overview(){
+    document.getElementById('app').innerHTML = strip(null) + `
+      <div class="kpis">
+        ${kpi('Revenue',fmtN(T.rev),data.length+' months trading',C.cyan)}
+        ${kpi('Gross profit',fmtN(T.gp),tMargin.toFixed(1)+'% margin',C.orange)}
+        ${kpi('Expenses',fmtN(T.exp),(T.rev?(T.exp/T.rev*100).toFixed(1):0)+'% of revenue',C.orangeDeep)}
+        ${kpi('Orders',Math.round(T.orders).toLocaleString(),fmtN(tAvg)+' average',C.cyanLight)}
+        ${kpi('Pieces washed',Math.round(T.pieces).toLocaleString(),Math.round(T.units).toLocaleString()+' billable units',C.lemon)}
+        ${kpi('Best month',best.month,fmtN(best.rev),C.cyanPale)}
+      </div>
+
+      <div class="panel">
+        <div class="phead">
+          <div>
+            <h2>Revenue, cost and profit by month</h2>
+            <p>Each bar is one month. Blue is revenue, orange is what was left after expenses. Click a bar to open that month.</p>
+          </div>
+          <div class="legend">
+            <span class="lg"><span class="sw" style="background:${C.cyan}"></span>Revenue</span>
+            <span class="lg"><span class="sw" style="background:${C.orange}"></span>Gross profit</span>
+            <span class="lg"><span class="sw" style="background:${C.orangeDeep}"></span>Expenses</span>
+            <span class="lg"><span class="sw" style="background:${C.lemon}"></span>Margin %</span>
+          </div>
+        </div>
+        <div class="chartbox" id="cash"></div>
+      </div>
+
+      <div class="panel">
+        <div class="phead">
+          <div>
+            <h2>Where the orders come from</h2>
+            <p>Subscriber orders against walk-in orders, month by month.</p>
+          </div>
+          <div class="ctrls">
+            <button class="tgl" data-mix="mix" aria-pressed="true">Subs vs walk-ins</button>
+            <button class="tgl" data-mix="vol" aria-pressed="false">Pieces &amp; units</button>
+          </div>
+        </div>
+        <div class="chartbox" id="mix"></div>
+      </div>
+
+      <div class="panel">
+        <div class="phead">
+          <div><h2>Monthly detail</h2><p>Every trading month. Click a row to open it.</p></div>
+        </div>
+        <div class="tscroll">
+          <table>
+            <thead><tr>
+              <th>Month</th><th>Orders</th><th>Pieces</th><th>Units</th>
+              <th>Subs</th><th>Walk-ins</th><th>Revenue</th><th>Expenses</th>
+              <th>Gross profit</th><th>Margin</th><th>Avg order</th>
+            </tr></thead>
+            <tbody>
+              ${data.map((d,i)=>`<tr class="crow" data-m="${i}">
+                <td>${d.month}</td><td>${d.orders}</td><td>${d.pieces.toLocaleString()}</td>
+                <td>${d.units.toLocaleString()}</td><td>${d.subs}</td><td>${d.walk}</td>
+                <td>${fmtN(d.rev)}</td><td>${fmtN(d.exp)}</td>
+                <td class="pos">${fmtN(d.gp)}</td>
+                <td class="${d.margin<50?'warn':''}">${d.margin.toFixed(1)}%</td>
+                <td>${fmtN(d.avg)}</td></tr>`).join('')}
+              <tr class="tot">
+                <td>Total</td><td>${Math.round(T.orders).toLocaleString()}</td>
+                <td>${Math.round(T.pieces).toLocaleString()}</td><td>${Math.round(T.units).toLocaleString()}</td>
+                <td>${Math.round(T.subs)}</td><td>${Math.round(T.walk)}</td>
+                <td>${fmtN(T.rev)}</td><td>${fmtN(T.exp)}</td><td>${fmtN(T.gp)}</td>
+                <td>${tMargin.toFixed(1)}%</td><td>${fmtN(tAvg)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+
+    drawCash(data, i=>show(i));
+    drawMix(data,'mix');
+    document.querySelectorAll('[data-mix]').forEach(b=>{
+      b.addEventListener('click',()=>{
+        document.querySelectorAll('[data-mix]').forEach(x=>x.setAttribute('aria-pressed','false'));
+        b.setAttribute('aria-pressed','true');
+        drawMix(data,b.dataset.mix);
+      });
+    });
+    document.querySelectorAll('.crow').forEach(r=>
+      r.addEventListener('click',()=>show(+r.dataset.m)));
+    wireStrip();
+  }
+
+  /* ---------- single month ---------- */
+  function monthView(i){
+    const d=data[i], prev=i>0?data[i-1]:null;
+    const share = d.orders? (d.subs/d.orders*100) : 0;
+    const avgShare = AVG.orders? (AVG.subs/AVG.orders*100) : 0;
+    const rank = [...data].sort((a,b)=>b.rev-a.rev).findIndex(x=>x.month===d.month)+1;
+
+    document.getElementById('app').innerHTML = strip(i) + `
+      <div class="mhead">
+        <div>
+          <h2>${d.month}</h2>
+          <p>Ranked ${rank} of ${N} months by revenue. Every figure below is compared with your ${N}-month average.</p>
+        </div>
+        <button class="back" data-m="all">← All months</button>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi" style="--accent:${C.cyan}"><div class="lab">Revenue</div>
+          <div class="val">${fmtN(d.rev)}</div><div class="sub">${vs(d.rev,AVG.rev)}</div></div>
+        <div class="kpi" style="--accent:${C.orange}"><div class="lab">Gross profit</div>
+          <div class="val">${fmtN(d.gp)}</div><div class="sub">${vs(d.gp,AVG.gp)}</div></div>
+        <div class="kpi" style="--accent:${C.orangeDeep}"><div class="lab">Expenses</div>
+          <div class="val">${fmtN(d.exp)}</div><div class="sub">${vs(d.exp,AVG.exp,true)}</div></div>
+        <div class="kpi" style="--accent:${C.lemon}"><div class="lab">Margin</div>
+          <div class="val">${d.margin.toFixed(1)}%</div>
+          <div class="sub">${vs(d.margin,AVG.margin)}</div></div>
+        <div class="kpi" style="--accent:${C.cyanLight}"><div class="lab">Orders</div>
+          <div class="val">${d.orders}</div><div class="sub">${vs(d.orders,AVG.orders)}</div></div>
+        <div class="kpi" style="--accent:${C.cyanPale}"><div class="lab">Average order</div>
+          <div class="val">${fmtN(d.avg)}</div><div class="sub">${vs(d.avg,AVG.avg)}</div></div>
+      </div>
+
+      <div class="grid2">
+        <div class="panel">
+          <div class="phead"><div>
+            <h2>Money in, money out</h2>
+            <p>${d.month} against your ${N}-month average.</p>
+          </div></div>
+          <div class="chartbox" id="mbars"></div>
+        </div>
+
+        <div class="panel">
+          <div class="phead"><div>
+            <h2>Who ordered</h2>
+            <p>${Math.round(share)}% of orders came from subscribers, against ${Math.round(avgShare)}% on average.</p>
+          </div></div>
+          <div class="chartbox" id="mdonut"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="phead"><div><h2>The full month</h2>
+          <p>Every figure the Summary sheet holds for ${d.month}.</p></div></div>
+        <div class="tscroll">
+          <table>
+            <thead><tr><th>Measure</th><th>${d.month}</th><th>${N}-month average</th>
+              <th>Difference</th>${prev?`<th>${prev.month}</th>`:''}</tr></thead>
+            <tbody>
+              ${[
+                ['Revenue',d.rev,AVG.rev,prev&&prev.rev,fmtN],
+                ['Expenses',d.exp,AVG.exp,prev&&prev.exp,fmtN],
+                ['Gross profit',d.gp,AVG.gp,prev&&prev.gp,fmtN],
+                ['Margin %',d.margin,AVG.margin,prev&&prev.margin,v=>v.toFixed(1)+'%'],
+                ['Orders',d.orders,AVG.orders,prev&&prev.orders,v=>Math.round(v)],
+                ['Subscriber orders',d.subs,AVG.subs,prev&&prev.subs,v=>Math.round(v)],
+                ['Walk-in orders',d.walk,AVG.walk,prev&&prev.walk,v=>Math.round(v)],
+                ['Pieces',d.pieces,AVG.pieces,prev&&prev.pieces,v=>Math.round(v).toLocaleString()],
+                ['Billable units',d.units,AVG.units,prev&&prev.units,v=>Math.round(v).toLocaleString()],
+                ['Average order',d.avg,AVG.avg,prev&&prev.avg,fmtN]
+              ].map(([lab,v,a,p,f])=>{
+                const diff=v-a, sign=diff>=0?'+':'−';
+                return `<tr><td>${lab}</td><td>${f(v)}</td><td>${f(a)}</td>
+                  <td class="${diff>=0?'pos':'warn'}">${sign}${f(Math.abs(diff))}</td>
+                  ${prev?`<td>${f(p)}</td>`:''}</tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+
+    drawMonthBars(d,AVG);
+    drawDonut(d);
+    wireStrip();
+  }
+
+  function wireStrip(){
+    document.querySelectorAll('[data-m]').forEach(b=>{
+      if(b.classList.contains('crow')) return;
+      b.addEventListener('click',()=>show(b.dataset.m==='all'?null:+b.dataset.m));
+    });
+  }
+  function show(i){
+    if(i===null) overview(); else monthView(i);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  overview();
+}
+
+/* ---------- tooltip helper ---------- */
+function attachTip(host, colEls, builder){
+  const tip=document.createElement('div');
+  tip.className='tip'; host.appendChild(tip);
+  colEls.forEach(({el,d})=>{
+    const show=e=>{
+      tip.innerHTML=builder(d);
+      tip.classList.add('on');
+      const hb=host.getBoundingClientRect();
+      let x=e.clientX-hb.left+14, y=e.clientY-hb.top-12;
+      const tb=tip.getBoundingClientRect();
+      if(x+tb.width>hb.width) x=e.clientX-hb.left-tb.width-14;
+      if(x<0) x=6;
+      if(y<0) y=6;
+      if(y+tb.height>hb.height) y=hb.height-tb.height-6;
+      tip.style.left=x+'px'; tip.style.top=y+'px';
+    };
+    el.addEventListener('mousemove',show);
+    el.addEventListener('mouseenter',show);
+    el.addEventListener('mouseleave',()=>tip.classList.remove('on'));
+  });
+  host.addEventListener('mouseleave',()=>tip.classList.remove('on'));
+}
+const row=(l,v,c)=>`<div class="r"><span>${l}</span><b${c?` style="color:${c}"`:''}>${v}</b></div>`;
+
+/* ---------- chart 1: revenue / profit / expenses / margin ---------- */
+function drawCash(data,onPick){
+  const host=document.getElementById('cash');
+  const W=1120,H=430,ml=64,mr=48,mt=22,mb=54;
+  const iw=W-ml-mr, ih=H-mt-mb;
+  const maxV=Math.max(...data.map(d=>d.rev))*1.12;
+  const step=iw/data.length, bw=Math.min(step*.30,26);
+  const x=i=>ml+step*i+step/2;
+  const y=v=>mt+ih-(v/maxV)*ih;
+  const ym=v=>mt+ih-(v/100)*ih;
+
+  let g='';
+  for(let i=0;i<=4;i++){
+    const v=maxV*i/4, yy=y(v);
+    g+=`<line class="gl" x1="${ml}" y1="${yy}" x2="${W-mr}" y2="${yy}"/>
+        <text class="ax" x="${ml-9}" y="${yy+3.5}" text-anchor="end">${fmtK(v)}</text>
+        <text class="ax" x="${W-mr+9}" y="${yy+3.5}" fill="${C.lemon}" opacity=".7">${i*25}%</text>`;
+  }
+
+  const every=data.length>16?2:1;
+  let bars='',cols=[];
+  data.forEach((d,i)=>{
+    const cx=x(i);
+    const rH=Math.max(ih-(y(d.rev)-mt),1);
+    const gH=Math.max(ih-(y(Math.max(d.gp,0))-mt),1);
+    const eH=Math.max(ih-(y(d.exp)-mt),1);
+    bars+=`<g class="bcol" data-i="${i}">
+      <rect class="hit" x="${cx-step/2}" y="${mt}" width="${step}" height="${ih}"/>
+      <rect class="bar" x="${cx-bw*1.05}" y="${y(d.rev)}" width="${bw*.92}" height="${rH}" rx="2.5" fill="${C.cyan}"/>
+      <rect class="bar" x="${cx-bw*.05}" y="${y(Math.max(d.gp,0))}" width="${bw*.92}" height="${gH}" rx="2.5" fill="${C.orange}"/>
+      <rect class="bar" x="${cx+bw*.95}" y="${y(d.exp)}" width="${bw*.55}" height="${eH}" rx="2" fill="${C.orangeDeep}" opacity=".78"/>
+    </g>`;
+    if(i%every===0||i===data.length-1)
+      bars+=`<text class="ax" x="${cx}" y="${H-mb+19}" text-anchor="middle">${d.month.replace(' ',"'").replace(/'(\d{2})\d{2}/,"'$1")}</text>`;
+  });
+
+  const mPath=data.map((d,i)=>(i?'L':'M')+x(i)+' '+ym(d.margin)).join(' ');
+  const mDots=data.map((d,i)=>`<circle cx="${x(i)}" cy="${ym(d.margin)}" r="2.6" fill="${C.lemon}"/>`).join('');
+
+  host.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly revenue, gross profit, expenses and margin">
+    ${g}
+    <line class="gl" x1="${ml}" y1="${mt+ih}" x2="${W-mr}" y2="${mt+ih}" stroke="${C.muted}" stroke-opacity=".45"/>
+    ${bars}
+    <path d="${mPath}" fill="none" stroke="${C.lemon}" stroke-width="1.7" stroke-opacity=".85" stroke-linejoin="round"/>
+    ${mDots}
+  </svg>`;
+
+  const cols2=[...host.querySelectorAll('.bcol')].map(el=>({el,d:data[+el.dataset.i]}));
+  if(onPick) cols2.forEach(({el})=>el.addEventListener('click',()=>onPick(+el.dataset.i)));
+  attachTip(host,cols2,d=>`<h4>${d.month}</h4>
+    ${row('Revenue',fmtN(d.rev),C.cyan)}
+    ${row('Expenses',fmtN(d.exp),C.orangeDeep)}
+    ${row('Gross profit',fmtN(d.gp),C.orange)}
+    ${row('Margin',d.margin.toFixed(1)+'%',C.lemon)}
+    ${row('Orders',d.orders)}
+    ${row('Avg order',fmtN(d.avg))}
+    <div class="r" style="margin-top:7px;opacity:.6"><span>Click to open</span></div>`);
+}
+
+/* ---------- month view: this month against the average ---------- */
+function drawMonthBars(d,AVG){
+  const host=document.getElementById('mbars');
+  const W=520,H=280,ml=76,mr=20,mt=16,mb=44;
+  const iw=W-ml-mr, ih=H-mt-mb;
+  const series=[
+    {lab:'Revenue', now:d.rev, avg:AVG.rev, c:C.cyan},
+    {lab:'Expenses',now:d.exp, avg:AVG.exp, c:C.orangeDeep},
+    {lab:'Profit',  now:d.gp,  avg:AVG.gp,  c:C.orange}
+  ];
+  const maxV=Math.max(...series.map(s=>Math.max(s.now,s.avg)))*1.15||1;
+  const band=iw/series.length, bw=Math.min(band*.3,40);
+  const y=v=>mt+ih-(v/maxV)*ih;
+
+  let g='';
+  for(let i=0;i<=4;i++){
+    const v=maxV*i/4, yy=y(v);
+    g+=`<line class="gl" x1="${ml}" y1="${yy}" x2="${W-mr}" y2="${yy}"/>
+        <text class="ax" x="${ml-9}" y="${yy+3.5}" text-anchor="end">${fmtK(v)}</text>`;
+  }
+  let bars='';
+  series.forEach((s,i)=>{
+    const cx=ml+band*i+band/2;
+    bars+=`<rect x="${cx-bw-3}" y="${y(s.now)}" width="${bw}" height="${Math.max(ih-(y(s.now)-mt),1)}" rx="3" fill="${s.c}"/>
+      <rect x="${cx+3}" y="${y(s.avg)}" width="${bw}" height="${Math.max(ih-(y(s.avg)-mt),1)}" rx="3"
+        fill="${s.c}" opacity=".26" stroke="${s.c}" stroke-opacity=".5" stroke-dasharray="3 2"/>
+      <text class="ax" x="${cx}" y="${H-mb+19}" text-anchor="middle">${s.lab}</text>`;
+  });
+  host.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img"
+      aria-label="This month against the average for revenue, expenses and profit">${g}
+    <line class="gl" x1="${ml}" y1="${mt+ih}" x2="${W-mr}" y2="${mt+ih}" stroke="${C.muted}" stroke-opacity=".45"/>
+    ${bars}</svg>
+    <div class="legend" style="margin-top:12px">
+      <span class="lg"><span class="sw" style="background:${C.cyan}"></span>This month</span>
+      <span class="lg"><span class="sw" style="background:${C.cyan};opacity:.3"></span>Average month</span>
+    </div>`;
+}
+
+/* ---------- month view: subscriber vs walk-in split ---------- */
+function drawDonut(d){
+  const host=document.getElementById('mdonut');
+  const W=520,H=280,cx=W/2,cy=H/2-6,R=88,r=54;
+  const tot=d.subs+d.walk;
+  if(!tot){host.innerHTML='<div class="state">No orders recorded this month.</div>';return;}
+  const parts=[{lab:'Subscriber',v:d.subs,c:C.cyan},{lab:'Walk-in',v:d.walk,c:C.orange}];
+  let a0=-Math.PI/2, segs='';
+  parts.forEach(p=>{
+    if(!p.v) return;
+    const a1=a0+(p.v/tot)*Math.PI*2, big=(a1-a0)>Math.PI?1:0;
+    const P=(ang,rad)=>[cx+Math.cos(ang)*rad,cy+Math.sin(ang)*rad];
+    const [x1,y1]=P(a0,R),[x2,y2]=P(a1,R),[x3,y3]=P(a1,r),[x4,y4]=P(a0,r);
+    segs+=`<path d="M${x1} ${y1} A${R} ${R} 0 ${big} 1 ${x2} ${y2} L${x3} ${y3} A${r} ${r} 0 ${big} 0 ${x4} ${y4} Z"
+      fill="${p.c}" stroke="#0B2545" stroke-width="2"/>`;
+    a0=a1;
+  });
+  host.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img"
+      aria-label="Subscriber against walk-in orders this month">${segs}
+    <text x="${cx}" y="${cy-4}" text-anchor="middle" fill="${C.text||'#F4F8FB'}"
+      style="font-family:Archivo,sans-serif;font-weight:800;font-size:30px">${tot}</text>
+    <text x="${cx}" y="${cy+18}" text-anchor="middle" class="ax">orders</text></svg>
+    <div class="legend" style="margin-top:10px;justify-content:center">
+      ${parts.map(p=>`<span class="lg"><span class="sw" style="background:${p.c}"></span>
+        ${p.lab} · ${p.v} (${Math.round(p.v/tot*100)}%)</span>`).join('')}
+    </div>`;
+}
+
+/* ---------- chart 2: mix / volume ---------- */
+function drawMix(data,mode){
+  const host=document.getElementById('mix');
+  const W=1120,H=310,ml=54,mr=24,mt=18,mb=48;
+  const iw=W-ml-mr, ih=H-mt-mb;
+  const A=mode==='mix'?'subs':'pieces', B=mode==='mix'?'walk':'units';
+  const LA=mode==='mix'?'Subscriber orders':'Pieces', LB=mode==='mix'?'Walk-in orders':'Billable units';
+  const cA=mode==='mix'?C.cyan:C.cyanLight, cB=mode==='mix'?C.orange:C.lemon;
+  const maxV=Math.max(...data.map(d=>Math.max(d[A],d[B])))*1.15;
+  const step=iw/data.length, bw=Math.min(step*.34,24);
+  const x=i=>ml+step*i+step/2, y=v=>mt+ih-(v/maxV)*ih;
+
+  let g='';
+  for(let i=0;i<=4;i++){
+    const v=maxV*i/4, yy=y(v);
+    g+=`<line class="gl" x1="${ml}" y1="${yy}" x2="${W-mr}" y2="${yy}"/>
+        <text class="ax" x="${ml-9}" y="${yy+3.5}" text-anchor="end">${Math.round(v)}</text>`;
+  }
+
+  const every=data.length>16?2:1;
+  let bars='';
+  data.forEach((d,i)=>{
+    const cx=x(i);
+    bars+=`<g class="bcol" data-i="${i}">
+      <rect class="hit" x="${cx-step/2}" y="${mt}" width="${step}" height="${ih}"/>
+      <rect class="bar" x="${cx-bw}" y="${y(d[A])}" width="${bw*.9}" height="${Math.max(ih-(y(d[A])-mt),1)}" rx="2.5" fill="${cA}"/>
+      <rect class="bar" x="${cx+bw*.1}" y="${y(d[B])}" width="${bw*.9}" height="${Math.max(ih-(y(d[B])-mt),1)}" rx="2.5" fill="${cB}"/>
+    </g>`;
+    if(i%every===0||i===data.length-1)
+      bars+=`<text class="ax" x="${cx}" y="${H-mb+19}" text-anchor="middle">${d.month.replace(' ',"'").replace(/'(\d{2})\d{2}/,"'$1")}</text>`;
+  });
+
+  host.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${LA} against ${LB} by month">
+    ${g}
+    <line class="gl" x1="${ml}" y1="${mt+ih}" x2="${W-mr}" y2="${mt+ih}" stroke="${C.muted}" stroke-opacity=".45"/>
+    ${bars}
+  </svg>
+  <div class="legend" style="margin-top:12px">
+    <span class="lg"><span class="sw" style="background:${cA}"></span>${LA}</span>
+    <span class="lg"><span class="sw" style="background:${cB}"></span>${LB}</span>
+  </div>`;
+
+  const cols=[...host.querySelectorAll('.bcol')].map(el=>({el,d:data[+el.dataset.i]}));
+  attachTip(host,cols,d=>`<h4>${d.month}</h4>
+    ${row(LA,Math.round(d[A]).toLocaleString(),cA)}
+    ${row(LB,Math.round(d[B]).toLocaleString(),cB)}
+    ${row('Total orders',d.orders)}
+    ${row('Revenue',fmtN(d.rev))}`);
+}
+</script>
+</body>
+</html>
